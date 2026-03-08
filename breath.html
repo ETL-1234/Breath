@@ -111,7 +111,7 @@ const SUPABASE_URL="https://tppyzexttkuvcobbbmaz.supabase.co/rest/v1/breathpract
 const SUPABASE_KEY="sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
 
 const params=new URLSearchParams(window.location.search);
-const practiceId=params.get("practice");
+const practiceId=params.get("practice") || 1;
 
 const title=document.getElementById("title");
 const type=document.getElementById("type");
