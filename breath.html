@@ -125,11 +125,6 @@ let theme;
 
 async function loadPractice(){
 
-if(!practiceId){
-alert("No practice ID provided in URL");
-return;
-}
-
 const res=await fetch(
 `${SUPABASE_URL}?id=eq.${practiceId}&select=*`,
 {
@@ -139,6 +134,12 @@ Authorization:`Bearer ${SUPABASE_KEY}`
 }
 }
 );
+
+if(!res.ok){
+console.error("Fetch failed", res);
+alert("Supabase request failed");
+return;
+}
 
 const data=await res.json();
 
