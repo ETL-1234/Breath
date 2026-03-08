@@ -75,10 +75,6 @@ opacity:.6;
 <div id="timer"></div>
 
 <script>
-
-const SUPABASE_URL="https://tppyzexttkuvcobbbmaz.supabase.co";
-const SUPABASE_KEY="sb_publishable_cSllA7ncMuvdwRmtNzC6pQ_B7qpmjDm";
-
 let practices=[];
 let practice=null;
 
@@ -88,18 +84,34 @@ let totalTime=0;
 
 let ambientAudio=null;
 let endAudio=null;
+  
+const SUPABASE_URL = "https://tppyzexttkuvcobbbmaz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_cSllA7ncMuvdwRmtNzC6pQ_B7qpmjDm";
 
-async function loadPractices(){
+async function loadPractices() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*`, {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
+      }
+    });
 
-const res = await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*`, {
-  headers: {
-    "apikey": SUPABASE_KEY,
-    "Authorization": `Bearer ${SUPABASE_KEY}`,
-    "Content-Type": "application/json"
+    if (!res.ok) {
+      throw new Error(`Supabase error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    console.log("Practices loaded:", data);
+    return data;
+
+  } catch (err) {
+    console.error(err);
   }
-});
+}
 
-practices=await res.json();
+loadPractices();
 
 /* for now load first active practice */
 
