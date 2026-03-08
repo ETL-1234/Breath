@@ -91,11 +91,10 @@ let endAudio=null;
 
 async function loadPractices(){
 
-const res=await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*`,{
-headers:{
-apikey:SUPABASE_KEY,
-Authorization:`Bearer ${SUPABASE_KEY}`
-}
+const res = await fetch(`${SUPABASE_URL}?select=*`, {
+  headers: {
+    "apikey": SUPABASE_KEY
+  }
 });
 
 practices=await res.json();
