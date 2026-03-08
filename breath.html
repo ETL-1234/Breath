@@ -137,12 +137,16 @@ document.getElementById("startBtn").addEventListener("click", async () => {
   document.getElementById("startBtn").style.display = "none";
 
   // Ambient audio
-  if(practice.audio_url){
+ if(practice.audio_url){
+  try {
     ambientAudio = new Audio(practice.audio_url);
     ambientAudio.loop = true;
     ambientAudio.volume = 0.6;
     ambientAudio.play();
+  } catch(e){
+    console.warn("Could not play ambient audio", e);
   }
+}
 
   if(practice.audio_end_url){
     endAudio = new Audio(practice.audio_end_url);
