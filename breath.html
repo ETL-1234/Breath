@@ -106,11 +106,14 @@ async function loadPractices() {
     }
 });
 
-    console.log(await res.text());
+   if (!res.ok) {
+  const text = await res.text();
+  console.error(text);
+  throw new Error(`Supabase error: ${res.status}`);
+}
 
-    if (!res.ok) throw new Error(`Supabase error: ${res.status} ${res.statusText}`);
-
-    practices = await res.json();
+practices = await res.json();
+    
     console.log("Practices loaded:", practices);
 
     // pick first active practice or fallback
