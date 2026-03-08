@@ -107,6 +107,8 @@ async function loadPractices() {
   }
 });
 
+    console.log(await res.text());
+
     if (!res.ok) throw new Error(`Supabase error: ${res.status} ${res.statusText}`);
 
     practices = await res.json();
