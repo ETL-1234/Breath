@@ -102,6 +102,7 @@ async function loadPractices() {
     const res = await fetch(`${SUPABASE_URL}?select=*`, {
       headers: {
         "apikey": SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
       }
     });
 
