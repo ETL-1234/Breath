@@ -112,13 +112,16 @@ async function loadPractices() {
   throw new Error(`Supabase error: ${res.status}`);
 }
 
-practices = await res.json();
-    
-    console.log("Practices loaded:", practices);
+const data = await res.json();
 
-    // pick first active practice or fallback
-    practice = practices.find(p => p.active) || practices[0];
-    if (!practice) return alert("No practice found!");
+console.log("Practice loaded:", data);
+
+practice = data[0];
+
+if (!practice) {
+  alert("No practice found!");
+  return;
+}
 
     document.getElementById("title").innerText = practice.name;
 
