@@ -99,7 +99,8 @@ let endAudio = null;
 // Load practices from Supabase
 async function loadPractices() {
   try {
-    const res = await fetch(`${SUPABASE_URL}?select=*`, {
+   const res = await fetch(`${SUPABASE_URL}?select=*`, {
+  method: "GET",
   headers: {
     "apikey": SUPABASE_KEY,
     "Authorization": `Bearer ${SUPABASE_KEY}`,
