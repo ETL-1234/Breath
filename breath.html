@@ -100,11 +100,12 @@ let endAudio = null;
 async function loadPractices() {
   try {
     const res = await fetch(`${SUPABASE_URL}?select=*`, {
-      headers: {
-        "apikey": SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-      }
-    });
+  headers: {
+    "apikey": SUPABASE_KEY,
+    "Authorization": `Bearer ${SUPABASE_KEY}`,
+    "Content-Type": "application/json"
+  }
+});
 
     if (!res.ok) throw new Error(`Supabase error: ${res.status} ${res.statusText}`);
 
