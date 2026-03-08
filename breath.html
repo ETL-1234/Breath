@@ -104,13 +104,24 @@ async function loadPractices() {
 
     const data = await res.json();
     console.log("Practices loaded:", data);
-    return data;
+
+    practices = data;
+
+    // pick the first active practice or fallback to first
+    practice = practices.find(p => p.active) || practices[0];
+    if (!practice) {
+      alert("No practice found!");
+      return;
+    }
+
+    initPractice();
 
   } catch (err) {
     console.error(err);
   }
 }
 
+// call once
 loadPractices();
 
 /* for now load first active practice */
