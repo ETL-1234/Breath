@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Breath Practice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+html,body{
+margin:0;
+padding:0;
+font-family:'Inter',sans-serif;
+color:white;
+height:100%;
+overflow:hidden;
+}
+
+#app{
+height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:6vw;
+box-sizing:border-box;
+}
+
+#title{
+font-size:clamp(26px,5vw,40px);
+font-weight:600;
+margin-bottom:10px;
+}
+
+#type{
+font-size:clamp(14px,3vw,18px);
+opacity:.7;
+margin-bottom:12px;
+}
+
+#description{
+font-size:clamp(14px,3vw,18px);
+opacity:.7;
+max-width:520px;
+line-height:1.4;
+margin-bottom:40px;
+}
+
+#instruction{
+font-size:clamp(22px,5vw,32px);
+margin-bottom:30px;
+opacity:.9;
+height:40px;
+}
+
+#circle{
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:transform linear;
+}
+
+#startBtn{
+margin-top:40px;
+padding:14px 28px;
+border-radius:40px;
+border:1px solid rgba(255,255,255,0.3);
+background:rgba(255,255,255,0.08);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.fadeOut{
+animation:fadeOut .8s forwards;
+}
+
+@keyframes fadeOut{
+to{
+opacity:0;
+transform:translateY(-20px);
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<div id="title"></div>
+<div id="type"></div>
+<div id="description"></div>
+
+<div id="instruction"></div>
+
+<div id="circle"></div>
+
+<button id="startBtn">Start Practice</button>
+
+</div>
+
+<script>
+
+const SUPABASE_URL="https://tppyzexttkuvcobbbmaz.supabase.co/rest/v1/breathpractice_with_theme";
+const SUPABASE_KEY="sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
+
+const params=new URLSearchParams(window.location.search);
+const practiceId=params.get("practice");
+
+const title=document.getElementById("title");
+const type=document.getElementById("type");
+const description=document.getElementById("description");
+const instruction=document.getElementById("instruction");
+const circle=document.getElementById("circle");
+const startBtn=document.getElementById("startBtn");
+
+let practice;
+let theme;
+
+async function loadPractice(){
+
+if(!practiceId){
+alert("No practice ID provided in URL");
+return;
+}
+
+const res=await fetch(
+`${SUPABASE_URL}?id=eq.${practiceId}&select=*`,
+{
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:`Bearer ${SUPABASE_KEY}`
+}
+}
+);
+
+const data=await res.json();
+
+if(!data || data.length===0){
+alert("Practice not found");
+return;
+}
+
+practice=data[0];
+
+initUI();
+
+}
+
+function initUI(){
+
+document.body.style.background=
+`linear-gradient(${practice.bg_start_gradient},${practice.bg_end_gradient})`;
+
+document.body.style.color = practice.text_color || "white";
+
+title.innerText=practice.name;
+type.innerText=practice.type;
+description.innerText=practice.description;
+
+circle.style.background=practice.circle_color;
+circle.style.opacity=practice.opacity;
+
+circle.style.width=practice.min_size+"px";
+circle.style.height=practice.min_size+"px";
+
+}
+
+document.getElementById("startBtn").onclick=startPractice;
+
+let cycleIndex=0;
+
+function startPractice(){
+
+title.classList.add("fadeOut");
+type.classList.add("fadeOut");
+description.classList.add("fadeOut");
+startBtn.classList.add("fadeOut");
+
+setTimeout(()=>{
+runPractice();
+},800);
+
+}
+
+function runPractice(){
+
+const steps=[];
+
+steps.push({type:"Inhale",time:practice.inhale_seconds,scale:practice.max_size});
+
+if(practice.hold1_seconds>0)
+steps.push({type:"Hold",time:practice.hold1_seconds,scale:practice.max_size});
+
+steps.push({type:"Exhale",time:practice.exhale_seconds,scale:practice.min_size});
+
+if(practice.hold2_seconds>0)
+steps.push({type:"Hold",time:practice.hold2_seconds,scale:practice.min_size});
+
+let totalSeconds=0;
+
+const interval=setInterval(()=>{
+
+const step=steps[cycleIndex];
+
+instruction.innerText=step.type;
+
+circle.style.transitionDuration=step.time+"s";
+circle.style.transform=`scale(${step.scale/practice.min_size})`;
+
+setTimeout(()=>{
+
+cycleIndex=(cycleIndex+1)%steps.length;
+
+},step.time*1000);
+
+totalSeconds++;
+
+if(totalSeconds>=practice.total_cycle_seconds){
+
+clearInterval(interval);
+
+finishPractice();
+
+}
+
+},1000);
+
+}
+
+function finishPractice(){
+
+instruction.innerText="Complete";
+
+if(practice.audio_end_url){
+
+const bell=new Audio(practice.audio_end_url);
+bell.play();
+
+}
+
+}
+
+loadPractice();
+
+</script>
+
+</body>
+</html>
