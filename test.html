@@ -151,6 +151,8 @@ function initUI(){
 document.body.style.background=
 `linear-gradient(${practice.bg_start_gradient},${practice.bg_end_gradient})`;
 
+document.body.style.color = practice.text_color || "white";
+
 title.innerText=practice.name;
 type.innerText=practice.type;
 description.innerText=practice.description;
