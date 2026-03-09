@@ -170,7 +170,7 @@ function renderDesign(type){
 function startCircleBreathing(){
   const circle = document.getElementById("circle");
   circle.style.transition = `transform 1s linear, box-shadow 1s linear`;
-  circle.style.transform = "scale(1)";
+  circle.style.transform = `scale(${minScale})`;
 }
 
 // Wave placeholder
