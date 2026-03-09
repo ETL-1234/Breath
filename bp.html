@@ -180,35 +180,40 @@ function startWaveBreathing(){ console.log("Wave breathing loaded"); }
 async function startBreathing(){
   const circle = document.getElementById("circle");
   const phaseEl = document.getElementById("phase");
+  let elapsed = 0;
   let currentScale = minScale;
 
-  for(const step of cycleSteps){
-    if(stopPractice) break;
-    phaseEl.innerText = step.label;
+  while(elapsed < totalTime && !stopPractice){
+    for(const step of cycleSteps){
+      if(stopPractice || elapsed >= totalTime) break;
 
-    // Only scale on inhale/exhale
-    if(step.label==="Inhale") currentScale = maxScale;
-    else if(step.label==="Exhale") currentScale = minScale;
-    // HOLD keeps currentScale
+      phaseEl.innerText = step.label;
 
-    // Animate
-    circle.style.transition = `transform ${step.seconds}s ${animationCurve}, box-shadow ${step.seconds}s ${animationCurve}`;
-    circle.style.transform = `scale(${currentScale})`;
+      // Scale only on inhale/exhale
+      if(step.label === "Inhale") currentScale = maxScale;
+      else if(step.label === "Exhale") currentScale = minScale;
+      // HOLD keeps currentScale
 
-    // Glow
-    if(practice.glow_color){
-      circle.style.boxShadow = (step.label==="Inhale") 
-        ? `0 0 ${40 + 20*maxScale}px ${practice.glow_color}`
-        : `0 0 40px ${practice.glow_color}`;
+      // Animate
+      circle.style.transition = `transform ${step.seconds}s ${animationCurve}, box-shadow ${step.seconds}s ${animationCurve}`;
+      circle.style.transform = `scale(${currentScale})`;
+
+      if(practice.glow_color){
+        circle.style.boxShadow = (step.label==="Inhale") 
+          ? `0 0 ${40 + 20*maxScale}px ${practice.glow_color}`
+          : `0 0 40px ${practice.glow_color}`;
+      }
+
+      await new Promise(r => setTimeout(r, step.seconds*1000));
+
+      if(stopPractice) break;
+
+      elapsed += step.seconds;
     }
-
-    await new Promise(r=>setTimeout(r, step.seconds*1000));
-     if(stopPractice) break;
   }
 
-  finishPractice();
+  if(!stopPractice) finishPractice(); // only auto-finish if not stopped
 }
-
 // End
 function finishPractice(){
   const phaseEl = document.getElementById("phase");
