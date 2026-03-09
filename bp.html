@@ -296,6 +296,8 @@ startBtn.addEventListener("click", async () => {
     // Stop button clicked
     stopPractice = true;
     startBtn.innerText = "Start Practice";
+    descriptionEl.classList.remove("fade-out");
+    durationEl.classList.remove("fade-out");
 
     if(ambientAudio) ambientAudio.pause();
     if(endAudio) endAudio.pause();
