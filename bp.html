@@ -244,7 +244,12 @@ function runStep(step) {
 
     phase.innerText = step.label;
     circle.style.transitionDuration = step.seconds + "s";
-    circle.style.transform = `scale(${step.scale})`;
+    const scale = step.label === "Inhale" ? maxScale :
+              step.label === "Exhale" ? minScale :
+              circle.style.transform.replace("scale(","").replace(")","");
+
+circle.style.transitionTimingFunction = animationCurve;
+circle.style.transform = `scale(${scale})`;
 
     setTimeout(resolve, step.seconds * 1000);
   });
