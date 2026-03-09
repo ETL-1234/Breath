@@ -165,17 +165,34 @@ let bellEnabled = true;
 const ambientToggle = document.getElementById("ambientToggle");
 const bellToggle = document.getElementById("bellToggle");
 
+// Ambient Audio Toggle
 if (ambientToggle) {
   ambientToggle.addEventListener("click", () => {
     ambientEnabled = !ambientEnabled;
     ambientToggle.classList.toggle("active", ambientEnabled);
+
+    // Immediately pause/play ambient audio
+    if (ambientAudio) {
+      if (ambientEnabled) {
+        ambientAudio.play().catch(() => {}); // resume
+      } else {
+        ambientAudio.pause(); // mute
+      }
+    }
   });
 }
 
+// Bell Toggle
 if (bellToggle) {
   bellToggle.addEventListener("click", () => {
     bellEnabled = !bellEnabled;
     bellToggle.classList.toggle("active", bellEnabled);
+
+    // Optional: stop any bell currently playing
+    if (endAudio && !bellEnabled) {
+      endAudio.pause();
+      endAudio.currentTime = 0; // reset to start
+    }
   });
 }
 
