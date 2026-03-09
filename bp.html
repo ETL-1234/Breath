@@ -182,6 +182,7 @@ async function startBreathing(){
   let currentScale = minScale;
 
   for(const step of cycleSteps){
+    if(stopPractice) break;
     phaseEl.innerText = step.label;
 
     // Only scale on inhale/exhale
@@ -201,6 +202,7 @@ async function startBreathing(){
     }
 
     await new Promise(r=>setTimeout(r, step.seconds*1000));
+     if(stopPractice) break;
   }
 
   finishPractice();
