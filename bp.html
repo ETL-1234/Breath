@@ -162,18 +162,22 @@ let bellEnabled = true;
   const descriptionEl = document.getElementById("description");
   const durationEl = document.getElementById("duration");
 
-  const ambientToggle = document.getElementById("ambientToggle");
+const ambientToggle = document.getElementById("ambientToggle");
 const bellToggle = document.getElementById("bellToggle");
 
-ambientToggle.addEventListener("click",()=>{
-  ambientEnabled = !ambientEnabled;
-  ambientToggle.classList.toggle("active", ambientEnabled);
-});
+if (ambientToggle) {
+  ambientToggle.addEventListener("click", () => {
+    ambientEnabled = !ambientEnabled;
+    ambientToggle.classList.toggle("active", ambientEnabled);
+  });
+}
 
-bellToggle.addEventListener("click",()=>{
-  bellEnabled = !bellEnabled;
-  bellToggle.classList.toggle("active", bellEnabled);
-});
+if (bellToggle) {
+  bellToggle.addEventListener("click", () => {
+    bellEnabled = !bellEnabled;
+    bellToggle.classList.toggle("active", bellEnabled);
+  });
+}
 
 // Load practice
 async function loadPractices(){
