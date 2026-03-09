@@ -129,6 +129,7 @@ async function loadPractices(){
 
     document.getElementById("title").innerText = practice.name;
     document.getElementById("description").innerText = practice.description || "";
+    document.getElementById("duration").innerText = `Duration: ${practice.practicetime} minutes`;
 
     minScale = practice.min_size || 1;
     maxScale = practice.max_size || 1.3;
