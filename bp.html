@@ -162,6 +162,8 @@ function applyTheme(p){
   if(p.bg_start_gradient && p.bg_end_gradient){
     document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
+
+  
   if(p.glow_color) circle.style.boxShadow = `0 0 40px ${p.glow_color}`;
   // opacity from SQL
   
@@ -219,11 +221,11 @@ async function startBreathing(){
       circle.style.transition = `transform ${step.seconds}s ${animationCurve}, box-shadow ${step.seconds}s ${animationCurve}`;
       circle.style.transform = `scale(${currentScale})`;
 
-      if(practice.glow_color){
+     if(practice.glow_color){
   if(step.label === "Inhale"){
-    circle.style.boxShadow = `0 0 ${60 * glowIntensity + 30*maxScale}px ${practice.glow_color}`;
+    circle.style.boxShadow = `0 0 ${60 * (practice.opacity ?? 1) + 30*maxScale}px ${practice.glow_color}`;
   } else {
-    circle.style.boxShadow = `0 0 ${60 * glowIntensity}px ${practice.glow_color}`;
+    circle.style.boxShadow = `0 0 ${60 * (practice.opacity ?? 1)}px ${practice.glow_color}`;
   }
 }
 
