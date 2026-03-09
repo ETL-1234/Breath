@@ -155,7 +155,19 @@ function applyTheme(p){
     document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
   if(p.glow_color) circle.style.boxShadow = `0 0 40px ${p.glow_color}`;
-  if(p.opacity) circle.style.opacity = p.opacity;
+  // opacity from SQL
+  
+ if(p.opacity !== undefined){
+  document.getElementById("circle").style.opacity = p.opacity;
+}
+
+// text inside circle opacity
+if(p.text_opacity !== undefined){
+  document.getElementById("phase").style.opacity = p.opacity;
+}
+
+// glow intensity multiplier
+const glowIntensity = p.glow_intensity ?? 1; // default 1 if not set
 }
 
 // Render design
