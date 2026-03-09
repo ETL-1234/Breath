@@ -272,6 +272,8 @@ startBtn.addEventListener("click", async () => {
   if(startBtn.innerText === "Start Practice"){
     stopPractice = false;
     startBtn.innerText = "Stop Practice";
+    descriptionEl.classList.add("fade-out");
+    durationEl.classList.add("fade-out");
 
     // Reset circle to minScale when starting
     circle.style.transform = `scale(${minScale})`;
