@@ -244,21 +244,7 @@ async function startBreathing() {
       await new Promise(r => setTimeout(r, step.seconds*1000));
       elapsed += step.seconds;
 
-      // Update timer
-      updateTimer(elapsed);
-    }
-  }
-
-  finishPractice();
-}
-
-// Update countdown timer
-function updateTimer(elapsed){
-  const remaining = Math.max(0, totalTime - elapsed);
-  const min = Math.floor(remaining/60);
-  const sec = remaining % 60;
-  document.getElementById("timer").innerText = `${min}:${sec.toString().padStart(2,'0')}`;
-}
+     
 
 // End of practice
 function finishPractice(){
