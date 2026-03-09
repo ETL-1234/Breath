@@ -192,75 +192,47 @@ document.getElementById("startBtn").addEventListener("click", async () => {
   await startBreathing();
 });
 
-  function applyTheme(p){
-
-  if(p.bg_color){
-    document.documentElement.style.setProperty("--bg-color", p.bg_color);
-  }
-
-  if(p.text_color){
-    document.documentElement.style.setProperty("--text-color", p.text_color);
-  }
-
-  if(p.circle_color){
-    document.documentElement.style.setProperty("--circle-color", p.circle_color);
-  }
-
-  // gradient background if present
+ // Apply theme colors from SQL
+function applyTheme(p){
+  if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
+  if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
+  if(p.circle_color) document.documentElement.style.setProperty("--circle-color", p.circle_color);
   if(p.bg_start_gradient && p.bg_end_gradient){
-    document.body.style.background =
-      `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
+    document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
-
-    
-  // circle glow
   if(p.glow_color){
-    document.getElementById("circle").style.boxShadow =
-      `0 0 40px ${p.glow_color}`;
+    document.getElementById("circle").style.boxShadow = `0 0 40px ${p.glow_color}`;
   }
-
-  // opacity
   if(p.opacity){
     document.getElementById("circle").style.opacity = p.opacity;
   }
 }
 
-  function renderDesign(type) {
-  switch(type) {
-
+// Render design type
+function renderDesign(type){
+  switch(type){
     case "wave":
       startWaveBreathing();
       break;
-
     case "circle":
     default:
       startCircleBreathing();
   }
-
 }
 
-    function startCircleBreathing() {
-
+// Circle design
+function startCircleBreathing(){
   const circle = document.getElementById("circle");
 
-  function inhale(){
-    circle.style.transform = "scale(1.35)";
-    circle.style.boxShadow = "0 0 60px rgba(255,255,255,0.6)";
-  }
-
-  function exhale(){
-    circle.style.transform = "scale(1)";
-    circle.style.boxShadow = "0 0 20px rgba(255,255,255,0.2)";
-  }
-
+  // optional initial style
+  circle.style.transition = "transform 1s linear";
+  circle.style.transform = "scale(1)";
 }
 
-    function startWaveBreathing(){
-
+// Wave design placeholder
+function startWaveBreathing(){
   console.log("Wave breathing design loaded");
-
 }
-
 
 // Main breathing loop
 async function startBreathing() {
