@@ -132,6 +132,7 @@ console.log("Practice loaded:", data);
 
 
 practice = data[0];
+applyTheme(practice);
 
 if (!practice) {
   alert("No practice found!");
@@ -178,6 +179,38 @@ document.getElementById("startBtn").addEventListener("click", async () => {
 
   await startBreathing();
 });
+
+  function applyTheme(p){
+
+  if(p.bg_color){
+    document.documentElement.style.setProperty("--bg-color", p.bg_color);
+  }
+
+  if(p.text_color){
+    document.documentElement.style.setProperty("--text-color", p.text_color);
+  }
+
+  if(p.circle_color){
+    document.documentElement.style.setProperty("--circle-color", p.circle_color);
+  }
+
+  // gradient background if present
+  if(p.bg_start_gradient && p.bg_end_gradient){
+    document.body.style.background =
+      `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
+  }
+
+  // circle glow
+  if(p.glow_color){
+    document.getElementById("circle").style.boxShadow =
+      `0 0 40px ${p.glow_color}`;
+  }
+
+  // opacity
+  if(p.opacity){
+    document.getElementById("circle").style.opacity = p.opacity;
+  }
+}
 
 // Main breathing loop
 async function startBreathing() {
