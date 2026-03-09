@@ -171,13 +171,18 @@ if (ambientToggle) {
     ambientEnabled = !ambientEnabled;
     ambientToggle.classList.toggle("active", ambientEnabled);
 
-    // Immediately pause/play ambient audio
+    // Stop current audio if any
     if (ambientAudio) {
-      if (ambientEnabled) {
-        ambientAudio.play().catch(() => {}); // resume
-      } else {
-        ambientAudio.pause(); // mute
-      }
+      ambientAudio.pause();
+      ambientAudio.currentTime = 0; // reset to start
+    }
+
+    // Start fresh audio if enabled
+    if (ambientEnabled && practice.audio_url) {
+      ambientAudio = new Audio(practice.audio_url);
+      ambientAudio.loop = true;
+      ambientAudio.volume = ambientVolume;
+      ambientAudio.play().catch(() => {});
     }
   });
 }
