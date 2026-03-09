@@ -340,7 +340,7 @@ startBtn.addEventListener("click", async () => {
     circle.style.transform = `scale(${minScale})`;
     phaseEl.innerText = "Ready";
 
-    if(practice.audio_url){
+    if(practice.audio_url && ambientEnabled){
       ambientAudio = new Audio(practice.audio_url);
       ambientAudio.loop = true;
       ambientAudio.volume = ambientVolume;
