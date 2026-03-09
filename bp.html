@@ -258,6 +258,10 @@ async function startBreathing(){
 function finishPractice(){
   const phaseEl = document.getElementById("phase");
   phaseEl.innerText = "Complete";
+  
+  descriptionEl.classList.remove("fade-out");
+  durationEl.classList.remove("fade-out");
+  
   if(ambientAudio) ambientAudio.pause();
   if(endAudio) endAudio.play();
 }
