@@ -151,12 +151,12 @@ document.getElementById("title").innerText = practice.name;
 document.getElementById("description").innerText = practice.description || "";
 
     // Prepare cycle steps
-    cycleSteps = [
-      { label: "Inhale", seconds: practice.inhale_seconds, scale: 1.3 },
-      { label: "Hold", seconds: practice.hold1_seconds, scale: 1.3 },
-      { label: "Exhale", seconds: practice.exhale_seconds, scale: 1 },
-      { label: "Hold", seconds: practice.hold2_seconds, scale: 1 }
-    ].filter(s => (s.seconds ?? 0) > 0);
+   cycleSteps = [
+  { label: "Inhale", seconds: practice.inhale_seconds },
+  { label: "Hold", seconds: practice.hold1_seconds },
+  { label: "Exhale", seconds: practice.exhale_seconds },
+  { label: "Hold", seconds: practice.hold2_seconds }
+  ].filter(s => (s.seconds ?? 0) > 0);
     totalTime = practice.practicetime * 60;
 
   } catch (err) {
