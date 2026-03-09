@@ -314,7 +314,7 @@ startBtn.addEventListener("click", async () => {
     if(practice.audio_url){
       ambientAudio = new Audio(practice.audio_url);
       ambientAudio.loop = true;
-      ambientAudio.volume = 0.6;
+      ambientAudio.volume = ambientVolume;
       ambientAudio.play().catch(()=>{});
     }
     if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
