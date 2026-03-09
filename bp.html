@@ -156,28 +156,27 @@ async function loadPractices(){
 // Apply theme
 function applyTheme(p){
   const circle = document.getElementById("circle");
+  const phase = document.getElementById("phase");
+
+  // Background and text colors
   if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
   if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
   if(p.circle_color) document.documentElement.style.setProperty("--circle-color", p.circle_color);
+
+  // Optional gradient
   if(p.bg_start_gradient && p.bg_end_gradient){
     document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
 
-  
-  if(p.glow_color) circle.style.boxShadow = `0 0 40px ${p.glow_color}`;
-  // opacity from SQL
-  
- if(p.opacity !== undefined){
-  document.getElementById("circle").style.opacity = p.opacity;
-}
+  // Single opacity setting (controls circle, text, and glow)
+  const opacity = p.opacity ?? 1; // default full opacity if not set
+  circle.style.opacity = opacity;
+  phase.style.opacity = opacity;
 
-// text inside circle opacity
-if(p.text_opacity !== undefined){
-  document.getElementById("phase").style.opacity = p.opacity;
-}
-
-// glow intensity multiplier
-const glowIntensity = p.glow_intensity ?? 1; // default 1 if not set
+  // Glow using opacity to scale intensity
+  if(p.glow_color){
+    circle.style.boxShadow = `0 0 ${40 * opacity}px ${p.glow_color}`;
+  }
 }
 
 // Render design
