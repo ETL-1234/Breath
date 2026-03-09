@@ -134,6 +134,10 @@ console.log("Practice loaded:", data);
 practice = data[0];
 applyTheme(practice);
 
+minScale = practice.min_size || 1;
+maxScale = practice.max_size || 1.3;
+animationCurve = practice.animation_curve || "linear";
+
 if (!practice) {
   alert("No practice found!");
   return;
