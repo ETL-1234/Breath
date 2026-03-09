@@ -214,6 +214,20 @@ document.getElementById("startBtn").addEventListener("click", async () => {
       `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
 
+    function renderDesign(type) {
+  switch(type) {
+
+    case "wave":
+      startWaveBreathing();
+      break;
+
+    case "circle":
+    default:
+      startCircleBreathing();
+  }
+
+}
+
   // circle glow
   if(p.glow_color){
     document.getElementById("circle").style.boxShadow =
