@@ -103,7 +103,6 @@ body{
 const SUPABASE_URL = "https://tppyzexttkuvcobbbmaz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
 
-let practices = [];
 let practice = null;
 let cycleSteps = [];
 let totalTime = 0;
@@ -117,50 +116,43 @@ let animationCurve = "linear";
 // Load practices from Supabase
 async function loadPractices() {
   try {
-  const res = await fetch(
-`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.1`,
-{
- headers:{
-  apikey: SUPABASE_KEY,
-  Authorization:`Bearer ${SUPABASE_KEY}`
- }
-});
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.1`,
+      {
+        headers:{
+          apikey: SUPABASE_KEY,
+          Authorization:`Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
 
-if (!res.ok) {
-  throw new Error(`Supabase error ${res.status}`);
-}
+    if (!res.ok) throw new Error(`Supabase error ${res.status}`);
 
-const data = await res.json();
+    const data = await res.json();
+    console.log("Practice loaded:", data);
 
-console.log("Practice loaded:", data);
+    practice = data[0];
+    applyTheme(practice);
 
+    minScale = practice.min_size || 1;
+    maxScale = practice.max_size || 1.3;
+    animationCurve = practice.animation_curve || "linear";
 
+    const designType = practice.design || "circle";
+    renderDesign(designType);
 
-practice = data[0];
-applyTheme(practice);
+    if (!practice) { alert("No practice found!"); return; }
 
-minScale = practice.min_size || 1;
-maxScale = practice.max_size || 1.3;
-animationCurve = practice.animation_curve || "linear";
+    document.getElementById("title").innerText = practice.name;
+    document.getElementById("description").innerText = practice.description || "";
 
-const designType = practice.design || "circle";
-renderDesign(designType);
+    cycleSteps = [
+      { label: "Inhale", seconds: practice.inhale_seconds },
+      { label: "Hold", seconds: practice.hold1_seconds },
+      { label: "Exhale", seconds: practice.exhale_seconds },
+      { label: "Hold", seconds: practice.hold2_seconds }
+    ].filter(s => (s.seconds ?? 0) > 0);
 
-if (!practice) {
-  alert("No practice found!");
-  return;
-}
-
-document.getElementById("title").innerText = practice.name;
-document.getElementById("description").innerText = practice.description || "";
-
-    // Prepare cycle steps
-   cycleSteps = [
-  { label: "Inhale", seconds: practice.inhale_seconds },
-  { label: "Hold", seconds: practice.hold1_seconds },
-  { label: "Exhale", seconds: practice.exhale_seconds },
-  { label: "Hold", seconds: practice.hold2_seconds }
-  ].filter(s => (s.seconds ?? 0) > 0);
     totalTime = practice.practicetime * 60;
 
   } catch (err) {
@@ -173,17 +165,14 @@ document.getElementById("description").innerText = practice.description || "";
 document.getElementById("startBtn").addEventListener("click", async () => {
   document.getElementById("startBtn").style.display = "none";
 
-  // Ambient audio
- if(practice.audio_url){
-  try {
-    ambientAudio = new Audio(practice.audio_url);
-    ambientAudio.loop = true;
-    ambientAudio.volume = 0.6;
-    ambientAudio.play();
-  } catch(e){
-    console.warn("Could not play ambient audio", e);
+  if(practice.audio_url){
+    try {
+      ambientAudio = new Audio(practice.audio_url);
+      ambientAudio.loop = true;
+      ambientAudio.volume = 0.6;
+      ambientAudio.play();
+    } catch(e){ console.warn("Could not play ambient audio", e); }
   }
-}
 
   if(practice.audio_end_url){
     endAudio = new Audio(practice.audio_end_url);
@@ -192,7 +181,7 @@ document.getElementById("startBtn").addEventListener("click", async () => {
   await startBreathing();
 });
 
- // Apply theme colors from SQL
+// Apply theme colors from SQL
 function applyTheme(p){
   if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
   if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
@@ -211,62 +200,57 @@ function applyTheme(p){
 // Render design type
 function renderDesign(type){
   switch(type){
-    case "wave":
-      startWaveBreathing();
-      break;
+    case "wave": startWaveBreathing(); break;
     case "circle":
-    default:
-      startCircleBreathing();
+    default: startCircleBreathing();
   }
 }
 
 // Circle design
 function startCircleBreathing(){
   const circle = document.getElementById("circle");
-
-  // optional initial style
   circle.style.transition = "transform 1s linear";
   circle.style.transform = "scale(1)";
 }
 
 // Wave design placeholder
-function startWaveBreathing(){
-  console.log("Wave breathing design loaded");
-}
+function startWaveBreathing(){ console.log("Wave breathing design loaded"); }
 
-// Main breathing loop
+// ======= Breathing Engine (replaces old startBreathing + runStep) =======
 async function startBreathing() {
+  const circle = document.getElementById("circle");
+  const phaseEl = document.getElementById("phase");
   let elapsed = 0;
 
-  while (elapsed < totalTime) {
-    for (const step of cycleSteps) {
-      if (elapsed >= totalTime) break;
-      await runStep(step);
+  while(elapsed < totalTime){
+    for(const step of cycleSteps){
+      if(elapsed >= totalTime) break;
+      phaseEl.innerText = step.label;
+
+      // Determine scale
+      let scale;
+      if(step.label === "Inhale") scale = maxScale;
+      else if(step.label === "Exhale") scale = minScale;
+      else scale = (maxScale + minScale)/2; // HOLD
+
+      // Animate circle + glow
+      circle.style.transition = `transform ${step.seconds}s ${animationCurve}, box-shadow ${step.seconds}s ${animationCurve}`;
+      if(step.label === "Inhale" && practice.glow_color){
+        circle.style.boxShadow = `0 0 ${40 + 20 * maxScale}px ${practice.glow_color}`;
+      } else if(practice.glow_color){
+        circle.style.boxShadow = `0 0 40px ${practice.glow_color}`;
+      }
+      circle.style.transform = `scale(${scale})`;
+
+      await new Promise(r => setTimeout(r, step.seconds*1000));
       elapsed += step.seconds;
+
+      // Update timer
       updateTimer(elapsed);
     }
   }
 
   finishPractice();
-}
-
-// Animate a single step
-function runStep(step) {
-  return new Promise(resolve => {
-    const circle = document.getElementById("circle");
-    const phase = document.getElementById("phase");
-
-    phase.innerText = step.label;
-    circle.style.transitionDuration = step.seconds + "s";
-    const scale = step.label === "Inhale" ? maxScale :
-              step.label === "Exhale" ? minScale :
-              circle.style.transform.replace("scale(","").replace(")","");
-
-circle.style.transitionTimingFunction = animationCurve;
-circle.style.transform = `scale(${scale})`;
-
-    setTimeout(resolve, step.seconds * 1000);
-  });
 }
 
 // Update countdown timer
@@ -280,12 +264,11 @@ function updateTimer(elapsed){
 // End of practice
 function finishPractice(){
   document.getElementById("phase").innerText = "Complete";
-
   if(ambientAudio) ambientAudio.pause();
   if(endAudio) endAudio.play();
 }
 
-  // Load practices on page load
+// Load practices on page load
 loadPractices();
 
 </script>
