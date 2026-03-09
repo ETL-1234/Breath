@@ -116,6 +116,9 @@ const data = await res.json();
 
 console.log("Practice loaded:", data);
 
+console.log(res.status);
+console.log(await res.text());
+
 practice = data[0];
 
 if (!practice) {
