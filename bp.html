@@ -215,20 +215,39 @@ function finishPractice(){
 }
 
 // Button
-document.getElementById("startBtn").addEventListener("click", async ()=>{
-  document.getElementById("startBtn").style.display="none";
+const startBtn = document.getElementById("startBtn");
 
-  if(practice.audio_url){
-    ambientAudio = new Audio(practice.audio_url);
-    ambientAudio.loop=true;
-    ambientAudio.volume=0.6;
-    ambientAudio.play().catch(()=>{});
+startBtn.addEventListener("click", async () => {
+  if(startBtn.innerText === "Start Practice"){
+    stopPractice = false;
+    startBtn.innerText = "Stop Practice";
+
+    if(practice.audio_url){
+      ambientAudio = new Audio(practice.audio_url);
+      ambientAudio.loop = true;
+      ambientAudio.volume = 0.6;
+      ambientAudio.play().catch(()=>{});
+    }
+    if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
+
+    await startBreathing();
+
+    // Reset button after finish
+    startBtn.innerText = "Start Practice";
+  } else {
+    // User clicked Stop
+    stopPractice = true;
+    startBtn.innerText = "Start Practice";
+    if(ambientAudio) ambientAudio.pause();
+    if(endAudio) endAudio.pause();
+    const phaseEl = document.getElementById("phase");
+    phaseEl.innerText = "Stopped";
+    // Reset circle scale
+    const circle = document.getElementById("circle");
+    circle.style.transform = `scale(${minScale})`;
   }
-  if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
-
-  await startBreathing();
 });
-
+  
 // Load on start
 loadPractices();
 </script>
