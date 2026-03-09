@@ -34,7 +34,7 @@ body{
 }
 
 #header{
-  margin-bottom:20px;
+  margin-bottom:40px;
 }
 
 #title{
@@ -58,19 +58,12 @@ body{
   align-items:center;
   justify-content:center;
   font-size:clamp(18px,2.5vw,26px);
-  transition-property: transform;
-  will-change: transform;
+  transition-property: transform, box-shadow;
+  will-change: transform, box-shadow;
 }
 
 #phase{
   opacity:.9;
-}
-
-#timer{
-  margin-top:25px;
-  font-size:clamp(14px,2vw,18px);
-  opacity:.6;
-  margin-bottom:20px;
 }
 
 #startBtn{
@@ -107,7 +100,6 @@ let cycleSteps = [];
 let totalTime = 0;
 let ambientAudio = null;
 let endAudio = null;
-
 let minScale = 1;
 let maxScale = 1.3;
 let animationCurve = "linear";
@@ -117,33 +109,22 @@ async function loadPractices() {
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.1`,
-      {
-        headers:{
-          apikey: SUPABASE_KEY,
-          Authorization:`Bearer ${SUPABASE_KEY}`
-        }
-      }
+      { headers:{ apikey: SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}` } }
     );
-
     if (!res.ok) throw new Error(`Supabase error ${res.status}`);
 
     const data = await res.json();
-    console.log("Practice loaded:", data);
-
     practice = data[0];
+    if(!practice){ alert("No practice found!"); return; }
+
+    document.getElementById("title").innerText = practice.name;
+    document.getElementById("description").innerText = practice.description || "";
+
     applyTheme(practice);
 
     minScale = practice.min_size || 1;
     maxScale = practice.max_size || 1.3;
     animationCurve = practice.animation_curve || "linear";
-
-    const designType = practice.design || "circle";
-    renderDesign(designType);
-
-    if (!practice) { alert("No practice found!"); return; }
-
-    document.getElementById("title").innerText = practice.name;
-    document.getElementById("description").innerText = practice.description || "";
 
     cycleSteps = [
       { label: "Inhale", seconds: practice.inhale_seconds },
@@ -154,13 +135,16 @@ async function loadPractices() {
 
     totalTime = practice.practicetime * 60;
 
+    const designType = practice.design || "circle";
+    renderDesign(designType);
+
   } catch (err) {
     console.error(err);
     alert("Sorry failed to load practice.");
   }
 }
 
-// Start button click
+// Start button
 document.getElementById("startBtn").addEventListener("click", async () => {
   document.getElementById("startBtn").style.display = "none";
 
@@ -172,15 +156,12 @@ document.getElementById("startBtn").addEventListener("click", async () => {
       ambientAudio.play();
     } catch(e){ console.warn("Could not play ambient audio", e); }
   }
-
-  if(practice.audio_end_url){
-    endAudio = new Audio(practice.audio_end_url);
-  }
+  if(practice.audio_end_url){ endAudio = new Audio(practice.audio_end_url); }
 
   await startBreathing();
 });
 
-// Apply theme colors from SQL
+// Apply theme colors
 function applyTheme(p){
   if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
   if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
@@ -196,7 +177,7 @@ function applyTheme(p){
   }
 }
 
-// Render design type
+// Render design
 function renderDesign(type){
   switch(type){
     case "wave": startWaveBreathing(); break;
@@ -205,57 +186,61 @@ function renderDesign(type){
   }
 }
 
-// Circle design
+// Circle placeholder
 function startCircleBreathing(){
   const circle = document.getElementById("circle");
-  circle.style.transition = "transform 1s linear";
+  circle.style.transition = `transform 1s linear, box-shadow 1s linear`;
   circle.style.transform = "scale(1)";
 }
 
-// Wave design placeholder
+// Wave placeholder
 function startWaveBreathing(){ console.log("Wave breathing design loaded"); }
 
-// ======= Breathing Engine (replaces old startBreathing + runStep) =======
-async function startBreathing() {
+// ======= Breathing Engine =======
+async function startBreathing(){
   const circle = document.getElementById("circle");
   const phaseEl = document.getElementById("phase");
   let elapsed = 0;
+  let currentScale = minScale;
 
   while(elapsed < totalTime){
     for(const step of cycleSteps){
       if(elapsed >= totalTime) break;
+
       phaseEl.innerText = step.label;
 
-      // Determine scale
-      let scale;
-      if(step.label === "Inhale") scale = maxScale;
-      else if(step.label === "Exhale") scale = minScale;
-      else scale = (maxScale + minScale)/2; // HOLD
+      // Only scale on inhale/exhale
+      if(step.label === "Inhale") currentScale = maxScale;
+      else if(step.label === "Exhale") currentScale = minScale;
+      // HOLD keeps currentScale
 
-      // Animate circle + glow
+      // Animate
       circle.style.transition = `transform ${step.seconds}s ${animationCurve}, box-shadow ${step.seconds}s ${animationCurve}`;
-      if(step.label === "Inhale" && practice.glow_color){
-        circle.style.boxShadow = `0 0 ${40 + 20 * maxScale}px ${practice.glow_color}`;
-      } else if(practice.glow_color){
-        circle.style.boxShadow = `0 0 40px ${practice.glow_color}`;
+      circle.style.transform = `scale(${currentScale})`;
+
+      // Glow effect
+      if(practice.glow_color){
+        if(step.label === "Inhale") circle.style.boxShadow = `0 0 ${40 + 20*maxScale}px ${practice.glow_color}`;
+        else circle.style.boxShadow = `0 0 40px ${practice.glow_color}`;
       }
-      circle.style.transform = `scale(${scale})`;
 
       await new Promise(r => setTimeout(r, step.seconds*1000));
       elapsed += step.seconds;
+    }
+  }
 
-     
+  finishPractice();
+}
 
-// End of practice
+// End practice
 function finishPractice(){
   document.getElementById("phase").innerText = "Complete";
   if(ambientAudio) ambientAudio.pause();
   if(endAudio) endAudio.play();
 }
 
-// Load practices on page load
+// Load on page load
 loadPractices();
-
 </script>
 
 </body>
