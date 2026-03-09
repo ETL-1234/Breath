@@ -221,9 +221,16 @@ function finishPractice(){
 const startBtn = document.getElementById("startBtn");
 
 startBtn.addEventListener("click", async () => {
+  const circle = document.getElementById("circle");
+  const phaseEl = document.getElementById("phase");
+
   if(startBtn.innerText === "Start Practice"){
     stopPractice = false;
     startBtn.innerText = "Stop Practice";
+
+    // Reset circle to minScale when starting
+    circle.style.transform = `scale(${minScale})`;
+    phaseEl.innerText = "Ready";
 
     if(practice.audio_url){
       ambientAudio = new Audio(practice.audio_url);
@@ -233,21 +240,22 @@ startBtn.addEventListener("click", async () => {
     }
     if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
 
-    await startBreathing();
+    await startBreathing(); // breathing loop
 
     // Reset button after finish
     startBtn.innerText = "Start Practice";
+
   } else {
-    // User clicked Stop
+    // Stop button clicked
     stopPractice = true;
     startBtn.innerText = "Start Practice";
+
     if(ambientAudio) ambientAudio.pause();
     if(endAudio) endAudio.pause();
-    const phaseEl = document.getElementById("phase");
+
     phaseEl.innerText = "Stopped";
-    // Reset circle scale
-    const circle = document.getElementById("circle");
     circle.style.transform = `scale(${minScale})`;
+    circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
   }
 });
   
