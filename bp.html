@@ -212,7 +212,20 @@ document.getElementById("startBtn").addEventListener("click", async () => {
       `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
 
-    function renderDesign(type) {
+    
+  // circle glow
+  if(p.glow_color){
+    document.getElementById("circle").style.boxShadow =
+      `0 0 40px ${p.glow_color}`;
+  }
+
+  // opacity
+  if(p.opacity){
+    document.getElementById("circle").style.opacity = p.opacity;
+  }
+}
+
+  function renderDesign(type) {
   switch(type) {
 
     case "wave":
@@ -248,17 +261,6 @@ document.getElementById("startBtn").addEventListener("click", async () => {
 
 }
 
-  // circle glow
-  if(p.glow_color){
-    document.getElementById("circle").style.boxShadow =
-      `0 0 40px ${p.glow_color}`;
-  }
-
-  // opacity
-  if(p.opacity){
-    document.getElementById("circle").style.opacity = p.opacity;
-  }
-}
 
 // Main breathing loop
 async function startBreathing() {
