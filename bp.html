@@ -109,6 +109,10 @@ let totalTime = 0;
 let ambientAudio = null;
 let endAudio = null;
 
+let minScale = 1;
+let maxScale = 1.3;
+let animationCurve = "linear";
+
 // Load practices from Supabase
 async function loadPractices() {
   try {
