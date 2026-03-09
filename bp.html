@@ -283,9 +283,13 @@ function finishPractice(){
   
   descriptionEl.classList.remove("fade-out");
   durationEl.classList.remove("fade-out");
+
+  await fadeOutAudio(ambientAudio, 2000);
   
-  if(ambientAudio) ambientAudio.pause();
-  if(endAudio) endAudio.play();
+  if(endAudio){
+    endAudio.volume = bellVolume;
+    endAudio.play();
+  }
 }
 
 // Button
