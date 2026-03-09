@@ -212,10 +212,12 @@ async function startBreathing(){
       circle.style.transform = `scale(${currentScale})`;
 
       if(practice.glow_color){
-        circle.style.boxShadow = (step.label==="Inhale") 
-          ? `0 0 ${60 + 30*maxScale}px ${practice.glow_color}`
-          : `0 0 50px ${practice.glow_color}`;
-      }
+  if(step.label === "Inhale"){
+    circle.style.boxShadow = `0 0 ${60 * glowIntensity + 30*maxScale}px ${practice.glow_color}`;
+  } else {
+    circle.style.boxShadow = `0 0 ${60 * glowIntensity}px ${practice.glow_color}`;
+  }
+}
 
       await new Promise(r => setTimeout(r, step.seconds*1000));
 
