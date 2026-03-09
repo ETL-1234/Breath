@@ -106,6 +106,9 @@ async function loadPractices() {
     }
 });
 
+console.log(res.status);
+console.log(await res.text());
+
    if (!res.ok) {
   const text = await res.text();
   console.error(text);
@@ -116,8 +119,7 @@ const data = await res.json();
 
 console.log("Practice loaded:", data);
 
-console.log(res.status);
-console.log(await res.text());
+
 
 practice = data[0];
 
