@@ -148,6 +148,9 @@ minScale = practice.min_size || 1;
 maxScale = practice.max_size || 1.3;
 animationCurve = practice.animation_curve || "linear";
 
+const designType = practice.design || "circle";
+renderDesign(designType);
+
 if (!practice) {
   alert("No practice found!");
   return;
