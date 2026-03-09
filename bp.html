@@ -128,6 +128,9 @@ let maxScale = 1.3;
 let animationCurve = "linear";
 let stopPractice = false;
 
+  const descriptionEl = document.getElementById("description");
+  const durationEl = document.getElementById("duration");
+
 // Load practice
 async function loadPractices(){
   try{
@@ -144,7 +147,7 @@ async function loadPractices(){
     document.getElementById("description").innerText = practice.description || "";
     document.getElementById("duration").innerHTML = `<strong>Duration:</strong> ${practice.practicetime} minutes`;
 
-    minScale = practice.min_size || 1;
+        minScale = practice.min_size || 1;
     maxScale = practice.max_size || 1.3;
     animationCurve = practice.animation_curve || "linear";
 
