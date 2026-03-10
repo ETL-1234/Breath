@@ -425,12 +425,14 @@ startBtn.addEventListener("click", async () => {
     await startBreathing(); // breathing loop
 
     // Reset button after finish
-    startBtn.innerText = "Start Practice";
-
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+   
   } else {
     // Stop button clicked
     stopPractice = true;
-    startBtn.innerText = "Start Practice";
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
     
     titleEl.classList.remove("fade-out");
     descriptionEl.classList.remove("fade-out");
