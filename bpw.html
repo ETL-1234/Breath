@@ -342,7 +342,10 @@ else if(step.label === "Hold"){
 waveAmplitude += (targetAmp - waveAmplitude) * 0.05;
 
   waveCtx.beginPath();
-  const centerY = waveCanvas.height/2;
+const centerY = waveCanvas.height/2;
+
+let prevX = 0;
+let prevY = centerY;
 
 for(let x=0;x<=waveCanvas.width;x+=2){
 
@@ -354,26 +357,33 @@ for(let x=0;x<=waveCanvas.width;x+=2){
 
   const y = centerY + breathingShape * waveAmplitude;
 
-  waveCtx.lineTo(x,y);
-}
-  
   let waveColor = practice.circle_color || "#ffffff";
 
-if(step.label === "Hold" && practice.hold_color){
-  waveColor = practice.hold_color;
-}
+  if(step.label === "Hold" && practice.hold_color){
+    waveColor = practice.hold_color;
+  }
 
-if(step.label === "Exhale" && practice.exhale_color){
-  waveColor = practice.exhale_color;
-}
+  if(step.label === "Exhale" && practice.exhale_color){
+    waveColor = practice.exhale_color;
+  }
+
+  // organic thickness variation
+  const thickness = 3 + Math.sin(progress * Math.PI * 3 + wavePhase) * 2;
+
+  waveCtx.beginPath();
+  waveCtx.moveTo(prevX, prevY);
+  waveCtx.lineTo(x, y);
 
   waveCtx.strokeStyle = waveColor;
-  
-  waveCtx.lineWidth = 5;
+  waveCtx.lineWidth = thickness;
   waveCtx.shadowColor = waveColor;
   waveCtx.shadowBlur = 18;
 
   waveCtx.stroke();
+
+  prevX = x;
+  prevY = y;
+}
 
   waveCtx.shadowBlur = 0;
 
