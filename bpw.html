@@ -317,7 +317,19 @@ function animateWave(){
     const y = waveCanvas.height/2 + waveAmplitude*Math.sin((x*0.05)+wavePhase);
     waveCtx.lineTo(x,y);
   }
-  waveCtx.strokeStyle = practice.circle_color || "#ffffff";
+  
+  let waveColor = practice.circle_color || "#ffffff";
+
+if(step.label === "Hold" && practice.hold_color){
+  waveColor = practice.hold_color;
+}
+
+if(step.label === "Exhale" && practice.exhale_color){
+  waveColor = practice.exhale_color;
+}
+
+waveCtx.strokeStyle = waveColor;
+  
   waveCtx.lineWidth = 3;
   waveCtx.stroke();
 
