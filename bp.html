@@ -497,7 +497,10 @@ startBtn.addEventListener("click", async () => {
     descriptionEl.classList.remove("fade-out");
     durationEl.classList.remove("fade-out");
 
-    if(ambientAudio) ambientAudio.pause();
+    if(ambientAudio){
+  ambientAudio.pause();
+  ambientAudio.currentTime = 0;
+}
     if(endAudio) endAudio.pause();
 
     phaseEl.innerText = "Paused";
