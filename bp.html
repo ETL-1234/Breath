@@ -402,7 +402,7 @@ startBtn.addEventListener("click", async () => {
     if(ambientAudio) ambientAudio.pause();
     if(endAudio) endAudio.pause();
 
-    phaseEl.innerText = "Stopped";
+    phaseEl.innerText = "Paused";
     circle.style.transform = `scale(${minScale})`;
     circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
   }
