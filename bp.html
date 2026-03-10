@@ -403,7 +403,8 @@ startBtn.addEventListener("click", async () => {
 
  if(playIcon.style.display !== "none"){
     stopPractice = false;
-    startBtn.innerText = "Stop Practice";
+    playIcon.style.display = "none";
+    pauseIcon.style.display = "block";
 
     titleEl.classList.add("fade-out");
     descriptionEl.classList.add("fade-out");
