@@ -306,18 +306,23 @@ function animateWave(){
   waveCtx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
 
   const step = cycleSteps[stepIndex];
-  // Adjust speed by phase
-if(step.label === "Hold"){
-  waveSpeed = 0.015;
-}
-else if(step.label === "Inhale"){
+
+let targetAmp = 20;
+
+if(step.label === "Inhale"){
   waveSpeed = 0.045;
+  targetAmp = 38;
 }
 else if(step.label === "Exhale"){
   waveSpeed = 0.045;
+  targetAmp = 38;
+}
+else if(step.label === "Hold"){
+  waveSpeed = 0.015;
+  targetAmp = 18;
 }
 
-  waveAmplitude += (targetAmp - waveAmplitude) * 0.05;
+waveAmplitude += (targetAmp - waveAmplitude) * 0.05;
 
   waveCtx.beginPath();
   const centerY = waveCanvas.height/2;
