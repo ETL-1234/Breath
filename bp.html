@@ -293,6 +293,45 @@ if (bellToggle) {
   });
 }
 
+// Reset Practice
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+
+    stopPractice = true;
+
+    const circle = document.getElementById("circle");
+    const phaseEl = document.getElementById("phase");
+
+    // Stop audio
+    if(ambientAudio){
+      ambientAudio.pause();
+      ambientAudio.currentTime = 0;
+    }
+
+    if(endAudio){
+      endAudio.pause();
+      endAudio.currentTime = 0;
+    }
+
+    // Reset visuals
+    circle.style.transform = `scale(${minScale})`;
+    circle.style.boxShadow = practice.glow_color
+      ? `0 0 40px ${practice.glow_color}`
+      : "";
+
+    phaseEl.innerText = "Ready";
+
+    // Reset button UI
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+
+    titleEl.classList.remove("fade-out");
+    descriptionEl.classList.remove("fade-out");
+    durationEl.classList.remove("fade-out");
+
+  });
+}
+
 // Load practice
 async function loadPractices(){
   try{
