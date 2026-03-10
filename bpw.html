@@ -320,15 +320,15 @@ let targetAmp = 20;
 
 if(step.label === "Inhale"){
   waveSpeed = 0.045;
-  targetAmp = 38;
+  targetAmp = 48;
 }
 else if(step.label === "Exhale"){
   waveSpeed = 0.045;
-  targetAmp = 38;
+  targetAmp = 48;
 }
 else if(step.label === "Hold"){
-  waveSpeed = 0.025;
-  targetAmp = 28;
+  waveSpeed = 0.045;
+  targetAmp = 38;
 }
 
 waveAmplitude += (targetAmp - waveAmplitude) * 0.05;
