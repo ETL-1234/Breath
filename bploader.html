@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Breathing Practice - Unified</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --text-color:#ffffff;
+  --bg-color:#000000;
+  --main-color:#ffffff;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg-color);
+  color:var(--text-color);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  height:100vh;
+  text-align:center;
+  padding-top:60px;
+}
+
+#header{ margin-bottom:40px; }
+#title{ font-size:clamp(22px,3vw,30px); font-weight:600; }
+#description{ font-size:clamp(14px,2vw,18px); font-style:italic; opacity:.7; margin:6px 0; transition: opacity .6s ease; }
+#duration{ font-style:italic; margin-top:2px; opacity:.7; font-size:clamp(14px,2vw,18px); margin-bottom:40px; }
+#duration strong{ font-weight:600; opacity:.7; }
+
+#animationContainer{
+  width:min(70vw,420px);
+  height:min(70vw,420px);
+  margin-bottom:80px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#phase{
+  position:absolute;
+  font-weight:600;
+  font-size:clamp(18px,2.5vw,26px);
+}
+
+button{
+  cursor:pointer;
+}
+
+/* Shared styles for orb/circle/wave/ripple/particles */
+.orb, .circle, .wave, .ripple, .particle{
+  border-radius:50%;
+  background-color:var(--main-color);
+  box-shadow:0 0 40px var(--main-color);
+  transition: all 1s linear;
+  position:absolute;
+  top:0; left:0; right:0; bottom:0;
+  margin:auto;
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="title">Breathing</div>
+  <div id="description"></div>
+  <div id="duration"></div>
+</div>
+
+<div id="animationContainer">
+  <div id="phase">Ready</div>
+</div>
+
+<button id="startBtn">Start</button>
+<button id="resetBtn">Reset</button>
+
+<script>
+const SUPABASE_URL="https://tppyzexttkuvcobbbmaz.supabase.co";
+const SUPABASE_KEY="sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
+
+let practice=null;
+let cycleSteps=[];
+let totalTime=0;
+let stopPractice=false;
+let animationInstance=null;
+
+const animationContainer=document.getElementById("animationContainer");
+const phaseEl=document.getElementById("phase");
+const titleEl=document.getElementById("title");
+const descriptionEl=document.getElementById("description");
+const durationEl=document.getElementById("duration");
+
+// ------------------ Load Practice ------------------
+async function loadPractice(practiceId=1){
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.${practiceId}`,{
+      headers:{apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`}
+    });
+    if(!res.ok) throw new Error(`Supabase error ${res.status}`);
+    const data=await res.json();
+    practice=data[0];
+    if(!practice){ alert("No practice found"); return; }
+
+    // Fill UI
+    titleEl.innerText=practice.name;
+    descriptionEl.innerText=practice.description||"";
+    durationEl.innerHTML=`<strong>Duration:</strong> ${practice.practicetime} minutes`;
+
+    // Set theme
+    document.documentElement.style.setProperty("--bg-color", practice.bg_color||"#000");
+    document.documentElement.style.setProperty("--text-color", practice.text_color||"#fff");
+    document.documentElement.style.setProperty("--main-color", practice.circle_color||"#fff");
+
+    // Steps
+    cycleSteps=[
+      {label:"Inhale", seconds:practice.inhale_seconds},
+      {label:"Hold", seconds:practice.hold1_seconds},
+      {label:"Exhale", seconds:practice.exhale_seconds},
+      {label:"Hold", seconds:practice.hold2_seconds}
+    ].filter(s=>(s.seconds??0)>0);
+
+    totalTime=practice.practicetime*60;
+
+    // Render correct design
+    renderDesign(practice.design||"circle");
+
+  }catch(err){ console.error(err); alert("Failed to load practice"); }
+}
+
+// ------------------ Render Design ------------------
+function renderDesign(type){
+  // Clear previous
+  animationContainer.querySelectorAll(".orb,.circle,.wave,.ripple,.particle").forEach(e=>e.remove());
+  if(animationInstance&&animationInstance.stop) animationInstance.stop();
+
+  switch(type){
+    case "circle": animationInstance=startCircle(); break;
+    case "wave": animationInstance=startWave(); break;
+    case "ripple": animationInstance=startRipple(); break;
+    case "particles": animationInstance=startParticles(); break;
+    case "orb": animationInstance=startOrb(); break;
+    default: animationInstance=startCircle();
+  }
+}
+
+// ------------------ Design Functions ------------------
+
+// Circle - scale
+function startCircle(){
+  const el=document.createElement("div"); el.className="circle"; animationContainer.appendChild(el);
+  return breathingLoop(el, (step)=>{
+    if(step.label==="Inhale") el.style.transform="scale(1.3)";
+    else if(step.label==="Exhale") el.style.transform="scale(1)";
+    else el.style.transform="scale(1.1)";
+  });
+}
+
+// Wave - sine motion horizontal
+function startWave(){
+  const el=document.createElement("div"); el.className="wave"; animationContainer.appendChild(el);
+  let offset=0;
+  function animateWave(intensity){ offset+=0.05; el.style.transform=`translateX(${Math.sin(offset)*40*intensity}px)`; }
+  return breathingLoop(el, (step)=>{
+    if(step.label==="Inhale") animateWave(1);
+    else if(step.label==="Exhale") animateWave(0.6);
+    else animateWave(0.8);
+  });
+}
+
+// Ripple - expanding circle rings
+function startRipple(){
+  const el=document.createElement("div"); el.className="ripple"; animationContainer.appendChild(el);
+  return breathingLoop(el,(step)=>{
+    if(step.label==="Inhale"){ el.style.transform="scale(1.4)"; el.style.opacity=1; }
+    else if(step.label==="Exhale"){ el.style.transform="scale(1)"; el.style.opacity=0.6; }
+    else{ el.style.transform="scale(1.2)"; el.style.opacity=0.8; }
+  });
+}
+
+// Particles - floating small dots
+function startParticles(){
+  const el=document.createElement("div"); el.className="particle"; animationContainer.appendChild(el);
+  return breathingLoop(el,(step)=>{
+    if(step.label==="Inhale") el.style.transform="translateY(-30px)";
+    else if(step.label==="Exhale") el.style.transform="translateY(0px)";
+    else el.style.transform="translateY(-15px)";
+  });
+}
+
+// Orb - brightness pulsing
+function startOrb(){
+  const el=document.createElement("div"); el.className="orb"; animationContainer.appendChild(el);
+  return breathingLoop(el,(step)=>{
+    if(step.label==="Inhale") el.style.opacity=1;
+    else if(step.label==="Exhale") el.style.opacity=0.6;
+    else el.style.opacity=0.8;
+  });
+}
+
+// ------------------ Breathing Loop ------------------
+function breathingLoop(el,onStep){
+  let stop=false;
+  async function loop(){
+    let stepIndex=0;
+    while(!stop){
+      const step=cycleSteps[stepIndex];
+      phaseEl.innerText=step.label;
+      onStep(step);
+
+      const stepEnd=performance.now()+step.seconds*1000;
+      while(performance.now()<stepEnd){ if(stop) break; await new Promise(r=>setTimeout(r,40)); }
+
+      stepIndex=(stepIndex+1)%cycleSteps.length;
+    }
+  }
+  loop();
+  return { stop:()=>stop=true };
+}
+
+// ------------------ Buttons ------------------
+document.getElementById("startBtn").addEventListener("click",()=>{ stopPractice=false; animationInstance?.stop(); renderDesign(practice.design||"circle"); });
+document.getElementById("resetBtn").addEventListener("click",()=>{ stopPractice=true; animationContainer.querySelectorAll(".orb,.circle,.wave,.ripple,.particle").forEach(e=>e.remove()); phaseEl.innerText="Ready"; });
+
+loadPractice(1); // load default practiceId=1
+</script>
+
+</body>
+</html>
