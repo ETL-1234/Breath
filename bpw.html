@@ -320,10 +320,20 @@ else if(step.label === "Exhale"){
   waveAmplitude += (targetAmp - waveAmplitude) * 0.05;
 
   waveCtx.beginPath();
-  for(let x=0;x<waveCanvas.width;x++){
-    const y = waveCanvas.height/2 + waveAmplitude*Math.sin((x*0.05)+wavePhase);
-    waveCtx.lineTo(x,y);
-  }
+  const centerY = waveCanvas.height/2;
+
+for(let x=0;x<=waveCanvas.width;x+=2){
+
+  const progress = x / waveCanvas.width;
+
+  const breathingShape =
+      Math.sin((progress * Math.PI * 2) + wavePhase) *
+      Math.sin(progress * Math.PI);
+
+  const y = centerY + breathingShape * waveAmplitude;
+
+  waveCtx.lineTo(x,y);
+}
   
   let waveColor = practice.circle_color || "#ffffff";
 
