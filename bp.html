@@ -351,7 +351,8 @@ async function startBreathing(){
 async function finishPractice(){
   const phaseEl = document.getElementById("phase");
   phaseEl.innerText = "Complete";
-  
+
+  titleEl.classList.add("fade-out");
   descriptionEl.classList.remove("fade-out");
   durationEl.classList.remove("fade-out");
 
