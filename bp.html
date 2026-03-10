@@ -136,6 +136,38 @@ width:34px;
 height:34px;
 fill:white;
 }
+
+  .audioBtn{
+width:60px;
+height:60px;
+border-radius:16px;
+border:2px solid var(--text-color);
+background:transparent;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+cursor:pointer;
+}
+
+.audioBtn svg{
+width:26px;
+height:26px;
+fill:var(--text-color);
+}
+
+.audioBtn .strike{
+position:absolute;
+width:70%;
+height:2px;
+background:var(--text-color);
+transform:rotate(-45deg);
+opacity:0;
+}
+
+.audioBtn:not(.active) .strike{
+opacity:1;
+}
   
 </style>
 </head>
