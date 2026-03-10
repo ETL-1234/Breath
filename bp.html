@@ -255,18 +255,19 @@ if (ambientToggle) {
     ambientEnabled = !ambientEnabled;
     ambientToggle.classList.toggle("active", ambientEnabled);
 
-    // Stop current audio if any
-    if (ambientAudio) {
-      ambientAudio.pause();
-      ambientAudio.currentTime = 0; // reset to start
-    }
-
-    // Start fresh audio if enabled
-    if (ambientEnabled && practice.audio_url) {
+    if (!ambientAudio && practice?.audio_url) {
       ambientAudio = new Audio(practice.audio_url);
       ambientAudio.loop = true;
       ambientAudio.volume = ambientVolume;
-      ambientAudio.play().catch(() => {});
+    }
+
+    if (ambientAudio) {
+      if (ambientEnabled) {
+        ambientAudio.currentTime = 0; // restart from beginning
+        ambientAudio.play().catch(()=>{});
+      } else {
+        ambientAudio.pause();
+      }
     }
   });
 }
