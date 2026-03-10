@@ -344,10 +344,23 @@ function animateRipples(){
     r.radius += r.speed;
     r.alpha -= 0.01;
     rippleCtx.beginPath();
-    rippleCtx.arc(centerX,centerY,r.radius,0,2*Math.PI);
-    rippleCtx.strokeStyle = `rgba(${hexToRgb(practice.circle_color||"#ffffff")},${r.alpha})`;
-    rippleCtx.lineWidth = r.thickness;
-    rippleCtx.stroke();
+
+// PREMIUM SOFT GLOW
+rippleCtx.shadowBlur = 12;
+rippleCtx.shadowColor = `rgba(${hexToRgb(practice.circle_color||"#ffffff")},0.3)`;
+
+// Draw the circle
+rippleCtx.arc(centerX,centerY,r.radius,0,2*Math.PI);
+
+// Set line color and width
+rippleCtx.strokeStyle = `rgba(${hexToRgb(practice.circle_color||"#ffffff")},${r.alpha})`;
+rippleCtx.lineWidth = r.thickness;
+
+rippleCtx.stroke();
+
+// Reset shadow so it doesn't affect other drawings
+rippleCtx.shadowBlur = 0;
+rippleCtx.shadowColor = 'transparent';
   });
 
   ripples = ripples.filter(r=>r.alpha>0);
