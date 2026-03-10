@@ -516,6 +516,11 @@ startBtn.addEventListener("click", async()=>{
     playIcon.style.display="block";
     pauseIcon.style.display="none";
     phaseEl.innerText="Paused";
+
+    titleEl.classList.remove("fade-out");
+    descriptionEl.classList.remove("fade-out");
+    durationEl.classList.remove("fade-out");
+    
     if(ambientAudio){ ambientAudio.pause(); ambientAudio.currentTime=0;}
     if(endAudio){ endAudio.pause();}
   }
