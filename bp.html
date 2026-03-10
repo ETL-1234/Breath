@@ -301,6 +301,9 @@ if (bellToggle) {
 if (resetBtn) {
   resetBtn.addEventListener("click", () => {
 
+  resetBtn.classList.add("spin");
+  setTimeout(()=> resetBtn.classList.remove("spin"), 450);
+
     stopPractice = true;
 
     const circle = document.getElementById("circle");
