@@ -469,11 +469,16 @@ startBtn.addEventListener("click", async () => {
     phaseEl.innerText = "Ready";
 
     if(practice.audio_url && ambientEnabled){
-      ambientAudio = new Audio(practice.audio_url);
-      ambientAudio.loop = true;
-      ambientAudio.volume = ambientVolume;
-      ambientAudio.play().catch(()=>{});
-    }
+
+  if(!ambientAudio){
+    ambientAudio = new Audio(practice.audio_url);
+    ambientAudio.loop = true;
+    ambientAudio.volume = ambientVolume;
+  }
+
+  ambientAudio.currentTime = 0;
+  ambientAudio.play().catch(()=>{});
+}
     if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
 
     await startBreathing(); // breathing loop
