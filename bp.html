@@ -562,7 +562,11 @@ startBtn.addEventListener("click", async () => {
 }
     if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
 
-    await startBreathing(); // breathing loop
+   // breathing loop
+    const ready = await startCountdown();
+    if(!ready) return;
+
+    await startBreathing(); 
 
     // Reset button after finish
     playIcon.style.display = "block";
