@@ -401,7 +401,7 @@ startBtn.addEventListener("click", async () => {
   const circle = document.getElementById("circle");
   const phaseEl = document.getElementById("phase");
 
-  if(startBtn.innerText === "Start Practice"){
+ if(playIcon.style.display !== "none"){
     stopPractice = false;
     startBtn.innerText = "Stop Practice";
 
