@@ -345,15 +345,23 @@ function animateRipples(){
     r.alpha -= 0.01;
     rippleCtx.beginPath();
 
+ // DYNAMIC COLOR
+  let rippleColor = practice.circle_color || "#ffffff";
+  if(stepIndex !== undefined){
+    const step = cycleSteps[stepIndex];
+    if(step.label === "Hold" && practice.hold_color) rippleColor = practice.hold_color;
+    if(step.label === "Exhale" && practice.exhale_color) rippleColor = practice.exhale_color;
+  }
+
 // PREMIUM SOFT GLOW
-rippleCtx.shadowBlur = 12;
-rippleCtx.shadowColor = `rgba(${hexToRgb(practice.circle_color||"#ffffff")},0.3)`;
+ rippleCtx.shadowBlur = 12;
+ rippleCtx.shadowColor = `rgba(${hexToRgb(rippleColor)},0.3)`;
 
 // Draw the circle
 rippleCtx.arc(centerX,centerY,r.radius,0,2*Math.PI);
 
 // Set line color and width
-rippleCtx.strokeStyle = `rgba(${hexToRgb(practice.circle_color||"#ffffff")},${r.alpha})`;
+rippleCtx.strokeStyle = `rgba(${hexToRgb(rippleColor)},${r.alpha})`;
 rippleCtx.lineWidth = r.thickness;
 
 rippleCtx.stroke();
