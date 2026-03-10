@@ -345,10 +345,15 @@ if(step.label === "Exhale" && practice.exhale_color){
   waveColor = practice.exhale_color;
 }
 
-waveCtx.strokeStyle = waveColor;
+  waveCtx.strokeStyle = waveColor;
   
   waveCtx.lineWidth = 4;
+  waveCtx.shadowColor = waveColor;
+  waveCtx.shadowBlur = 12;
+
   waveCtx.stroke();
+
+  waveCtx.shadowBlur = 0;
 
   wavePhase += waveSpeed;
 
