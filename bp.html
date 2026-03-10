@@ -374,6 +374,8 @@ startBtn.addEventListener("click", async () => {
   if(startBtn.innerText === "Start Practice"){
     stopPractice = false;
     startBtn.innerText = "Stop Practice";
+
+    titleEl.classList.add("fade-out");
     descriptionEl.classList.add("fade-out");
     durationEl.classList.add("fade-out");
 
