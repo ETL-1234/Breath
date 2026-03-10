@@ -346,7 +346,7 @@ function animateRipples(){
     rippleCtx.beginPath();
     rippleCtx.arc(centerX,centerY,r.radius,0,2*Math.PI);
     rippleCtx.strokeStyle = `rgba(${hexToRgb(practice.circle_color||"#ffffff")},${r.alpha})`;
-    rippleCtx.lineWidth = 3;
+    rippleCtx.lineWidth = r.thickness;
     rippleCtx.stroke();
   });
 
