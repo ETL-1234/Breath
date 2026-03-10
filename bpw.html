@@ -305,10 +305,10 @@ function animateWave(){
   waveCtx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
 
   const step = cycleSteps[stepIndex];
-  let targetAmp = 10;
-  if(step.label==="Inhale") targetAmp=25;
-  else if(step.label==="Exhale") targetAmp=10;
-  else targetAmp=15;
+  let targetAmp = 20;
+  if(step.label==="Inhale") targetAmp=35;
+  else if(step.label==="Exhale") targetAmp=35;
+  else targetAmp=20;
 
   waveAmplitude += (targetAmp - waveAmplitude) * 0.05;
 
