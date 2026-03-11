@@ -355,26 +355,7 @@ function animateRipples(){
  rippleCtx.shadowColor = `rgba(${hexToRgb(rippleColor)},0.3)`;
 
 // Draw the circle
-rippleCtx.beginPath();
-
-const segments = 40;
-for(let i=0;i<=segments;i++){
-
-  const angle = (i/segments) * Math.PI*2;
-
-  const wobble =
-    Math.sin(angle*6 + performance.now()*0.003) * 1.5;
-
-  const radius = r.radius + wobble;
-
-  const x = centerX + Math.cos(angle)*radius;
-  const y = centerY + Math.sin(angle)*radius;
-
-  if(i===0) rippleCtx.moveTo(x,y);
-  else rippleCtx.lineTo(x,y);
-}
-
-rippleCtx.closePath();
+rippleCtx.arc(centerX,centerY,r.radius,0,2*Math.PI);
 
 // Set line color and width
 rippleCtx.strokeStyle = `rgba(${hexToRgb(rippleColor)},${r.alpha})`;
