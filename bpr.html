@@ -387,14 +387,17 @@ async function startBreathing(){
     const step = cycleSteps[stepIndex];
     phaseEl.innerText = step.label;
 
-    if(step.label==="Inhale"){
-  emitRipples(5,350,1.5);
+  // Start ripple stream for this step
+let rippleInterval;
+
+if(step.label==="Inhale"){
+  rippleInterval = setInterval(()=> emitRipples(2,0,1.5),350);
 }
 else if(step.label==="Exhale"){
-  emitRipples(4,420,1.2);
+  rippleInterval = setInterval(()=> emitRipples(2,0,1.2),420);
 }
 else{
-  emitRipples(3,500,1);
+  rippleInterval = setInterval(()=> emitRipples(1,0,1),500);
 }
 
     const stepEnd = performance.now() + step.seconds*1000;
