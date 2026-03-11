@@ -315,9 +315,30 @@ function applyTheme(p){
   if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
   if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
   if(p.circle_color) document.documentElement.style.setProperty("--wave-color", p.circle_color);
-  if(p.bg_start_gradient && p.bg_end_gradient){
+
+  // New background image logic
+  if(p.bg_image){
+    const overlayColor = p.bg_overlay_color || "#000000";
+    const opacity = (p.bg_opacity ?? 50) / 100; // default 50%
+    document.body.style.background = `
+      linear-gradient(rgba(${hexToRgb(overlayColor)}, ${opacity}), rgba(${hexToRgb(overlayColor)}, ${opacity})),
+      url(${p.bg_image}) center/cover no-repeat
+    `;
+  } 
+  // fallback to gradients if no bg_image
+  else if(p.bg_start_gradient && p.bg_end_gradient){
     document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
+}
+
+// helper function to convert hex to rgb for overlay
+function hexToRgb(hex){
+  const clean = hex.replace("#","").trim();
+  const bigint = parseInt(clean,16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `${r},${g},${b}`;
 }
 
 // ===== Canvas =====
