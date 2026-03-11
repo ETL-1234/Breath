@@ -347,8 +347,10 @@ function animateRipples(){
     r.alpha -= 0.01;
     rippleCtx.beginPath();
 
+    // DYNAMIC COLOR
+ let rippleColor = r.color;
  
- // PREMIUM SOFT GLOW
+    // PREMIUM SOFT GLOW
  rippleCtx.shadowBlur = 12;
  rippleCtx.shadowColor = `rgba(${hexToRgb(rippleColor)},0.3)`;
 
