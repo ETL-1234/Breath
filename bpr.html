@@ -418,7 +418,7 @@ async function startBreathing(){
 
   while(!stopPractice && performance.now() < endTime){
     const step = cycleSteps[stepIndex];
-    setPhaseText(step.label);
+    setPhaseText(step);
 
   // Start ripple stream for this step
 let rippleInterval;
