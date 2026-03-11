@@ -401,11 +401,14 @@ else{
 }
 
     const stepEnd = performance.now() + step.seconds*1000;
+    
     while(performance.now()<stepEnd){
       if(stopPractice) break;
       await new Promise(r=>setTimeout(r,40));
-    }
-
+          }
+    
+     clearInterval(rippleInterval);
+    
     stepIndex = (stepIndex+1) % cycleSteps.length;
   }
 
