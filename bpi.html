@@ -383,6 +383,8 @@ async function loadPractices(){
 }
 
 // Apply theme
+
+// ===== Apply theme =====
 function applyTheme(p){
   const circle = document.getElementById("circle");
   const phase = document.getElementById("phase");
@@ -392,21 +394,40 @@ function applyTheme(p){
   if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
   if(p.circle_color) document.documentElement.style.setProperty("--circle-color", p.circle_color);
 
-  // Optional gradient
-  if(p.bg_start_gradient && p.bg_end_gradient){
+  // New background image logic
+  if(p.bg_image){
+    const overlayColor = p.bg_overlay_color || "#000000";
+    const opacity = (p.bg_opacity ?? 50) / 100; // default 50%
+    document.body.style.background = `
+      linear-gradient(rgba(${hexToRgb(overlayColor)}, ${opacity}), rgba(${hexToRgb(overlayColor)}, ${opacity})),
+      url(${p.bg_image}) center/cover no-repeat
+    `;
+  } 
+  // fallback to gradients if no bg_image
+  else if(p.bg_start_gradient && p.bg_end_gradient){
     document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
 
   // Single opacity setting (controls circle, text, and glow)
   const opacity = p.opacity ?? 1; // default full opacity if not set
   circle.style.opacity = opacity;
- 
 
   // Glow using opacity to scale intensity
   if(p.glow_color){
     circle.style.boxShadow = `0 0 ${40 * opacity}px ${p.glow_color}`;
   }
 }
+
+// helper function to convert hex to rgb for overlay
+function hexToRgb(hex){
+  const clean = hex.replace("#","").trim();
+  const bigint = parseInt(clean,16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `${r},${g},${b}`;
+}
+ 
 
 // Render design
 function renderDesign(type){
