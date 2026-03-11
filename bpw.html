@@ -392,6 +392,24 @@ for(let x=0;x<=waveCanvas.width;x+=2){
   if(!stopPractice) requestAnimationFrame(animateWave);
 }
 
+  function setPhaseText(step){
+
+  const phaseEl = document.getElementById("phase");
+
+  let textColor = practice.circle_color || "#ffffff";
+
+  if(step.label === "Hold" && practice.hold_color){
+    textColor = practice.hold_color;
+  }
+
+  if(step.label === "Exhale" && practice.exhale_color){
+    textColor = practice.exhale_color;
+  }
+
+  phaseEl.innerText = step.label;
+  phaseEl.style.color = textColor;
+
+}
 // ===== Breathing Engine =====
 async function startBreathing(){
   const phaseEl = document.getElementById("phase");
