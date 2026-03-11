@@ -418,7 +418,7 @@ async function startBreathing(){
 
   while(!stopPractice && performance.now() < endTime){
     const step = cycleSteps[stepIndex];
-    phaseEl.innerText = step.label;
+    setPhaseText(step);
 
     const stepEnd = performance.now() + step.seconds*1000;
     while(performance.now() < stepEnd){
