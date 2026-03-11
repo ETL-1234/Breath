@@ -83,7 +83,14 @@ body{
   left:50%;
   transform:translate(-50%,-50%);
   font-size:clamp(18px,2.5vw,26px);
+  opacity:1;
+  transition: opacity .12s ease;
 }
+
+#phase.fade{
+  opacity:0;
+}
+
 
 #startBtn{
   width:80px;
