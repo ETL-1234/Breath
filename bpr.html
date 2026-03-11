@@ -388,6 +388,18 @@ function hexToRgb(hex){
   return result ? `${parseInt(result[1],16)},${parseInt(result[2],16)},${parseInt(result[3],16)}` : "255,255,255";
 }
 
+function setPhaseText(text){
+  const phaseEl = document.getElementById("phase");
+
+  phaseEl.classList.add("fade");
+
+  setTimeout(()=>{
+    phaseEl.innerText = text;
+    phaseEl.classList.remove("fade");
+  },120);
+}
+
+  
 // ===== Breathing Engine =====
 async function startBreathing(){
   const phaseEl = document.getElementById("phase");
