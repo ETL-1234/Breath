@@ -389,13 +389,22 @@ function hexToRgb(hex){
   return result ? `${parseInt(result[1],16)},${parseInt(result[2],16)},${parseInt(result[3],16)}` : "255,255,255";
 }
 
-function setPhaseText(text){
+function setPhaseText(step){
   const phaseEl = document.getElementById("phase");
+
+  let textColor = practice.circle_color || "#ffffff";
+
+  if(step.label === "Hold" && practice.hold_color)
+    textColor = practice.hold_color;
+
+  if(step.label === "Exhale" && practice.exhale_color)
+    textColor = practice.exhale_color;
 
   phaseEl.classList.add("fade");
 
   setTimeout(()=>{
-    phaseEl.innerText = text;
+    phaseEl.innerText = step.label;
+    phaseEl.style.color = textColor;
     phaseEl.classList.remove("fade");
   },120);
 }
