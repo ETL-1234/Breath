@@ -452,6 +452,7 @@ async function startBreathing(){
 
   // Start ripple stream for this step
 let rippleInterval;
+let lastSecondSpoken = null;
 
 if(step.label==="Inhale"){
   rippleInterval = setInterval(()=> emitRipples(2,0,1.5),350);
