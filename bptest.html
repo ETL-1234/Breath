@@ -595,9 +595,11 @@ async function startBreathing(){
 function playVoice(label){
   if(!spokenEnabled) return;
 
-  const audio = voice[label.toLowerCase()];
-  if(audio){
-    audio.cloneNode().play().catch(()=>{});
+  const base = voice[label.toLowerCase()];
+  if(base){
+    const audio = base.cloneNode();
+    audio.volume = base.volume;
+    audio.play().catch(()=>{});
   }
 }
 
