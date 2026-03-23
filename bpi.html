@@ -489,6 +489,7 @@ async function startBreathing(){
        box-shadow ${step.seconds}s ${animationCurve}`;
 
     circle.style.transform = `scale(${currentScale})`;
+    phaseEl.style.transform = `scale(${1 / currentScale})`;
 
     if(practice.glow_color){
       if(step.label === "Inhale"){
