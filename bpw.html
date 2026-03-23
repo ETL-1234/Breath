@@ -97,7 +97,7 @@ body{
   left:50%;
   transform:translateX(-50%);
   font-weight:600;
-  font-size:clamp(18px,2.5vw,26px);
+  font-size:clamp(22px,3vw,30px);
 }
 
 #startBtn{
@@ -243,6 +243,14 @@ body{
     </svg>
     <span class="strike"></span>
   </button>
+
+  <button id="spokenToggle" class="audioBtn">
+<svg viewBox="0 0 24 24">
+  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+</svg>
+<span class="strike"></span>
+</button>
+  
 </div>
 
 <script>
@@ -257,6 +265,7 @@ let endAudio = null;
 let stopPractice = false;
 let ambientEnabled = true;
 let bellEnabled = true;
+let spokenEnabled = true;
 
 const titleEl = document.getElementById("title");
 const descriptionEl = document.getElementById("description");
@@ -266,6 +275,7 @@ const pauseIcon = document.getElementById("pauseIcon");
 const ambientToggle = document.getElementById("ambientToggle");
 const resetBtn = document.getElementById("resetBtn");
 const bellToggle = document.getElementById("bellToggle");
+const spokenToggle = document.getElementById("spokenToggle");
 
 const waveCanvas = document.getElementById("waveCanvas");
 const waveCtx = waveCanvas.getContext("2d");
@@ -280,7 +290,7 @@ let waveSpeed = 0.05;
 // ===== Load Practice =====
 async function loadPractices(){
   try{
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.2`,{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.3`,{
       headers:{apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`}
     });
     if(!res.ok) throw new Error(`Supabase error ${res.status}`);
@@ -315,9 +325,30 @@ function applyTheme(p){
   if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
   if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
   if(p.circle_color) document.documentElement.style.setProperty("--wave-color", p.circle_color);
-  if(p.bg_start_gradient && p.bg_end_gradient){
+
+  // New background image logic
+  if(p.bg_image){
+    const overlayColor = p.bg_overlay_color || "#000000";
+    const opacity = (p.bg_opacity ?? 50) / 100; // default 50%
+    document.body.style.background = `
+      linear-gradient(rgba(${hexToRgb(overlayColor)}, ${opacity}), rgba(${hexToRgb(overlayColor)}, ${opacity})),
+      url(${p.bg_image}) center/cover no-repeat
+    `;
+  } 
+  // fallback to gradients if no bg_image
+  else if(p.bg_start_gradient && p.bg_end_gradient){
     document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
   }
+}
+
+// helper function to convert hex to rgb for overlay
+function hexToRgb(hex){
+  const clean = hex.replace("#","").trim();
+  const bigint = parseInt(clean,16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `${r},${g},${b}`;
 }
 
 // ===== Canvas =====
@@ -454,16 +485,27 @@ async function finishPractice(){
   }
 }
 
-function fadeOutAudio(audio,duration=2000){
-  return new Promise(resolve=>{
+function fadeOutAudio(audio, duration = 2000){
+  return new Promise(resolve => {
     if(!audio) return resolve();
-    const stepTime=50;
-    const steps=duration/stepTime;
-    const volumeStep=audio.volume/steps;
-    const fade=setInterval(()=>{
-      if(audio.volume>volumeStep) audio.volume-=volumeStep;
-      else{ audio.volume=0; audio.pause(); clearInterval(fade); resolve();}
-    },stepTime);
+
+    const startVolume = audio.volume;
+    const stepTime = 50;
+    const steps = duration / stepTime;
+    const volumeStep = startVolume / steps;
+
+    const fade = setInterval(()=>{
+      if(audio.volume > volumeStep){
+        audio.volume -= volumeStep;
+      } else {
+        audio.volume = 0;
+        clearInterval(fade);
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = startVolume; // reset for next session
+        resolve();
+      }
+    }, stepTime);
   });
 }
 
@@ -509,6 +551,14 @@ if(resetBtn){
     if(endAudio){ endAudio.pause(); endAudio.currentTime=0;}
   });
 }
+
+  if (spokenToggle) {
+  spokenToggle.addEventListener("click", () => {
+    spokenEnabled = !spokenEnabled;
+    spokenToggle.classList.toggle("active", spokenEnabled);
+  });
+}
+  
 
 // ===== Start Button =====
 const startBtn = document.getElementById("startBtn");
