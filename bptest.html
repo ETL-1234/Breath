@@ -549,10 +549,17 @@ async function startBreathing(){
     const targetTime = performance.now() + step.seconds*1000;
 
     while(performance.now() < targetTime){
-      if(stopPractice) break;
-      await new Promise(r => setTimeout(r,40));
-    }
+  if(stopPractice) break;
 
+  const remaining = Math.ceil((targetTime - performance.now()) / 1000);
+
+  if(remaining !== lastSecondSpoken && remaining > 0){
+    playNumber(remaining);
+    lastSecondSpoken = remaining;
+  }
+
+  await new Promise(r => setTimeout(r,40));
+}
     stepIndex = (stepIndex+1) % cycleSteps.length;
   }
 
