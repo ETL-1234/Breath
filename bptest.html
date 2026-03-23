@@ -524,6 +524,7 @@ async function startBreathing(){
     const step = cycleSteps[stepIndex];
 
     phaseEl.innerText = step.label;
+    playVoice(step.label);
 
     if(step.label === "Inhale") currentScale = maxScale;
     else if(step.label === "Exhale") currentScale = minScale;
