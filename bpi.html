@@ -618,6 +618,7 @@ startBtn.addEventListener("click", async () => {
     phaseEl.innerText = "Paused";
     circle.style.transform = `scale(${minScale})`;
     circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
+    phaseEl.style.transform = "scale(1)";
   }
 });
   
