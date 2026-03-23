@@ -471,7 +471,7 @@ function startWaveBreathing(){ console.log("Wave breathing loaded"); }
 async function startBreathing(){
 
   const circle = document.getElementById("circle");
-  const phaseEl = document.getElementById("phase").style.transform = "scale(1)";
+  const phaseEl = document.getElementById("phase");
 
   const startTime = performance.now();
   const endTime = startTime + totalTime*1000;
