@@ -320,6 +320,14 @@ if (bellToggle) {
   });
 }
 
+  // Spoken Toggle
+  if (spokenToggle) {
+  spokenToggle.addEventListener("click", () => {
+    spokenEnabled = !spokenEnabled;
+    spokenToggle.classList.toggle("active", spokenEnabled);
+  });
+}
+
 // Reset Practice
 if (resetBtn) {
   resetBtn.addEventListener("click", () => {
