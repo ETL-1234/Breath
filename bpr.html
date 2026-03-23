@@ -432,6 +432,8 @@ function setPhaseText(step){
 
   setTimeout(()=>{
     phaseEl.innerText = step.label;
+    playVoice(step.label);
+    
     phaseEl.style.color = textColor;
     phaseEl.classList.remove("fade");
   },120);
