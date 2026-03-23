@@ -552,7 +552,7 @@ async function startBreathing(){
     while(performance.now() < targetTime){
   if(stopPractice) break;
 
-  const remaining = Math.ceil((targetTime - performance.now()) / 1000);
+  const remaining = Math.ceil((targetTime - performance.now()) / 1000) - 1;
 
   if(remaining !== lastSecondSpoken && remaining > 0){
     playNumber(remaining);
