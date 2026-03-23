@@ -538,6 +538,14 @@ if(resetBtn){
   });
 }
 
+  if (spokenToggle) {
+  spokenToggle.addEventListener("click", () => {
+    spokenEnabled = !spokenEnabled;
+    spokenToggle.classList.toggle("active", spokenEnabled);
+  });
+}
+  
+
 // ===== Start Button =====
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", async()=>{
