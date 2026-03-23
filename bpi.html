@@ -12,7 +12,6 @@
   --text-color: #ffffff;
   --circle-color: #ffffff;
   --bg-color: #ffffff;
-  --phase-font-size: 24px; 
 }
 
 *{
@@ -70,24 +69,31 @@ body{
   opacity:0 !important;
 }
 
+  #circleWrapper{
+  position: relative;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:80px;
+}
+  
 #circle{
   width:var(--circle-size);
   height:var(--circle-size);
   opacity: 1;
   border-radius:50%;
   border:3px solid var(--circle-color);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-    transition-property: transform, box-shadow;
+  transition-property: transform, box-shadow;
   will-change: transform, box-shadow;
-  margin-bottom:80px;
-}
+  }
 
 #phase{
-  font-weight: 800;    /* bolder text */
-  font-size: var(--phase-font-size);
-  transform: scale(1) !important;
+  position:absolute;
+  font-weight:600;
+  font-size:28px;   
+  pointer-events:none;
  }
 
  #startBtn{
@@ -199,7 +205,8 @@ transform: rotate(200deg) scale(1.08);
   <div id="duration"></div>
 </div>
 
-<div id="circle">
+<div id="circleWrapper">
+  <div id="circle"></div>
   <div id="phase">Ready</div>
 </div>
 
@@ -334,7 +341,6 @@ if (resetBtn) {
       : "";
 
     phaseEl.innerText = "Ready";
-    phaseEl.style.transform = "scale(1)";  
 
     // Reset button UI
     playIcon.style.display = "block";
@@ -443,23 +449,16 @@ function renderDesign(type){
 
 // Circle placeholder
 function startCircleBreathing(){
-  document.getElementById("phase").style.transform = "scale(1)";
-  
   const circle = document.getElementById("circle");
-  const phaseEl = document.getElementById("phase");
-  
   circle.style.transition = `transform 1s linear, box-shadow 1s linear`;
   circle.style.transform = `scale(${minScale})`;
-  phaseEl.style.transform = "scale(1)";
 }
 
 // Wave placeholder
 function startWaveBreathing(){ console.log("Wave breathing loaded"); }
 
-  //Countdown
   async function startCountdown(){
   const phaseEl = document.getElementById("phase");
-  phaseEl.style.transform = "scale(1)";
 
   const steps = ["3","2","1","Inhale"];
 
@@ -498,8 +497,7 @@ async function startBreathing(){
        box-shadow ${step.seconds}s ${animationCurve}`;
 
     circle.style.transform = `scale(${currentScale})`;
-    phaseEl.style.transform = "scale(1)";
-    
+
     if(practice.glow_color){
       if(step.label === "Inhale"){
         circle.style.boxShadow =
@@ -580,7 +578,6 @@ startBtn.addEventListener("click", async () => {
     // Reset circle to minScale when starting
     circle.style.transform = `scale(${minScale})`;
     phaseEl.innerText = "Ready";
-    phaseEl.style.transform = "scale(1)";
 
     if(practice.audio_url && ambientEnabled){
 
@@ -624,7 +621,6 @@ startBtn.addEventListener("click", async () => {
     phaseEl.innerText = "Paused";
     circle.style.transform = `scale(${minScale})`;
     circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
-    phaseEl.style.transform = "scale(1)";
   }
 });
   
