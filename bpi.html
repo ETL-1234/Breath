@@ -12,6 +12,7 @@
   --text-color: #ffffff;
   --circle-color: #ffffff;
   --bg-color: #ffffff;
+  --phase-font-size: 28px; 
 }
 
 *{
@@ -78,14 +79,14 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:clamp(22px,3vw,30px);
-  transition-property: transform, box-shadow;
+    transition-property: transform, box-shadow;
   will-change: transform, box-shadow;
   margin-bottom:80px;
 }
 
 #phase{
   font-weight: 800;    /* bolder text */
+  font-size: var(--phase-font-size);
  }
 
  #startBtn{
