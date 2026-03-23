@@ -289,6 +289,12 @@ let spokenEnabled = true;
   }
 };
 
+Object.values(voice.numbers).forEach(a => a.volume = 0.35); // softer numbers
+voice.inhale.volume = 0.9;
+voice.exhale.volume = 0.9;
+voice.hold.volume = 0.9;
+
+  
   const titleEl = document.getElementById("title");
   const descriptionEl = document.getElementById("description");
   const durationEl = document.getElementById("duration");
