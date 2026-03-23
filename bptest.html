@@ -518,6 +518,7 @@ async function startBreathing(){
 
   let stepIndex = 0;
   let currentScale = minScale;
+  let lastSecondSpoken = null;
 
   while(!stopPractice && performance.now() < endTime){
 
