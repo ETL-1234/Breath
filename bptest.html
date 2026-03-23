@@ -581,6 +581,24 @@ async function startBreathing(){
     }, stepTime);
   });
 }
+
+function playVoice(label){
+  if(!spokenEnabled) return;
+
+  const audio = voice[label.toLowerCase()];
+  if(audio){
+    audio.cloneNode().play().catch(()=>{});
+  }
+}
+
+function playNumber(n){
+  if(!spokenEnabled) return;
+
+  const audio = voice.numbers[n];
+  if(audio){
+    audio.cloneNode().play().catch(()=>{});
+  }
+}
   
 async function finishPractice(){
   const phaseEl = document.getElementById("phase");
