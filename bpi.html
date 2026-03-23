@@ -442,8 +442,11 @@ function renderDesign(type){
 // Circle placeholder
 function startCircleBreathing(){
   const circle = document.getElementById("circle");
+  const phaseEl = document.getElementById("phase");
+  
   circle.style.transition = `transform 1s linear, box-shadow 1s linear`;
   circle.style.transform = `scale(${minScale})`;
+  phaseEl.style.transform = "scale(1)";
 }
 
 // Wave placeholder
