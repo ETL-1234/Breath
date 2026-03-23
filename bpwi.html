@@ -502,7 +502,7 @@ function fadeOutAudio(audio, duration = 2000){
         clearInterval(fade);
         audio.pause();
         audio.currentTime = 0;
-        audio.volume = startVolume; // 🔥 reset for next session
+        audio.volume = startVolume; // reset for next session
         resolve();
       }
     }, stepTime);
