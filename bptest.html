@@ -606,9 +606,11 @@ function playVoice(label){
 function playNumber(n){
   if(!spokenEnabled) return;
 
-  const audio = voice.numbers[n];
-  if(audio){
-    audio.cloneNode().play().catch(()=>{});
+  const base = voice.numbers[n];
+  if(base){
+    const audio = base.cloneNode();
+    audio.volume = base.volume;
+    audio.play().catch(()=>{});
   }
 }
   
