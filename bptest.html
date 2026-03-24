@@ -824,8 +824,9 @@ startBtn.addEventListener("click", async () => {
    // breathing loop
     const ready = await startCountdown();
     if(!ready) return;
-   if(userDesign === "ripple"){
-  animateRipples();
+  if(userDesign === "ripple"){
+  ripples = [];        // reset ripples
+  animateRipples();    // start animation
 }
 
     await startBreathing(); 
