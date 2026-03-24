@@ -451,7 +451,9 @@ async function loadPractices(){
       {label:"Hold", seconds:practice.hold2_seconds}
     ].filter(s => (s.seconds??0)>0);
 
-    totalTime = practice.practicetime * 60;
+    if(!totalTime){
+  totalTime = practice.practicetime * 60;
+}
 
     applyTheme(practice);
     renderDesign(practice.design || "circle");
