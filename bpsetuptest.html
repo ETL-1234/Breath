@@ -217,48 +217,34 @@ const visibleCount = 5;
 const spacerCount = Math.floor(visibleCount / 1);
 
 // CREATE ITEMS
-function createItems(){
-
-  for(let i=0;i<spacerCount;i++){
-    const spacer = document.createElement("div");
-    spacer.style.height = itemHeight + "px";
-    col.appendChild(spacer);
-  }
-
- const minValue = 1;
- const maxValue = 60;
-
 function createItems() {
+
+  const minValue = 1;
+  const maxValue = 60;
+
   // Top spacer
-  for(let i=0; i<1; i++){
+  for(let i = 0; i < spacerCount; i++){
     const spacer = document.createElement("div");
     spacer.style.height = itemHeight + "px";
     col.appendChild(spacer);
   }
 
-  // Numbers 01–60
-  for(let i=minValue; i<=maxValue; i++){
+  // Numbers
+  for(let i = minValue; i <= maxValue; i++){
     const el = document.createElement("div");
     el.className = "item";
-    el.innerText = String(i).padStart(2,"0");
+    el.innerText = String(i).padStart(2, "0");
     col.appendChild(el);
   }
 
   // Bottom spacer
-  for(let i=0; i<1; i++){
+  for(let i = 0; i < spacerCount; i++){
     const spacer = document.createElement("div");
     spacer.style.height = itemHeight + "px";
     col.appendChild(spacer);
   }
 }
-
-  for(let i=0;i<spacerCount;i++){
-    const spacer = document.createElement("div");
-    spacer.style.height = itemHeight + "px";
-    col.appendChild(spacer);
-  }
-}
-
+  
 createItems();
 
 function scrollToValue(value){
