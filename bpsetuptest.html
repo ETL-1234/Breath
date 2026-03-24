@@ -195,6 +195,85 @@ body{
 <button id="startBtn">Start</button>
 
 <script>
+
+const col = document.getElementById("minutes");
+
+const itemHeight = 44;
+const visibleCount = 5;
+const spacerCount = Math.floor(visibleCount / 2);
+
+// CREATE ITEMS
+function createItems(){
+
+  for(let i=0;i<spacerCount;i++){
+    const spacer = document.createElement("div");
+    spacer.style.height = itemHeight + "px";
+    col.appendChild(spacer);
+  }
+
+  for(let i=1;i<=45;i++){
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerText = String(i).padStart(2,"0");
+    col.appendChild(el);
+  }
+
+  for(let i=0;i<spacerCount;i++){
+    const spacer = document.createElement("div");
+    spacer.style.height = itemHeight + "px";
+    col.appendChild(spacer);
+  }
+}
+
+createItems();
+
+function scrollToValue(value){
+  const offset = col.offsetHeight / 2 - itemHeight / 2;
+  col.scrollTop = (value - 1 + spacerCount) * itemHeight - offset;
+}
+
+scrollToValue(10);
+
+function updateActive(){
+  const items = col.querySelectorAll(".item");
+  const center = col.scrollTop + col.offsetHeight/2;
+
+  items.forEach(item=>{
+    const offset = item.offsetTop + item.offsetHeight/2;
+    const distance = Math.abs(center - offset);
+    item.classList.toggle("active", distance < 25);
+  });
+}
+
+function getValue(){
+  const offset = col.offsetHeight / 2 - itemHeight / 2;
+  const raw = Math.round((col.scrollTop + offset) / itemHeight);
+  return raw - spacerCount + 1;
+}
+
+let scrollTimeout;
+
+col.addEventListener("scroll", () => {
+
+  updateActive();
+  clearTimeout(scrollTimeout);
+
+  scrollTimeout = setTimeout(() => {
+
+    const offset = col.offsetHeight / 2 - itemHeight / 2;
+    const raw = Math.round((col.scrollTop + offset) / itemHeight);
+    const target = raw * itemHeight - offset;
+
+    col.scrollTo({ top: target, behavior: "smooth" });
+
+    const value = getValue();
+    localStorage.setItem("breath_duration", value);
+
+  }, 80);
+});
+
+setTimeout(updateActive, 50);
+  
 let duration = 10;
 let spoken = false;
 let bell = false;
