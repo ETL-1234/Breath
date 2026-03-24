@@ -86,7 +86,7 @@ body{
   position:absolute;
   top:50%;
   left:50%;
-  transform:translate(-50%, -50%);
+  transform:translateX(-50%);
   width:100px;
   height:44px;
   border-top:1px solid rgba(255,255,255,0.2);
@@ -225,12 +225,32 @@ function createItems(){
     col.appendChild(spacer);
   }
 
-  for(let i=1;i<=45;i++){
+ const minValue = 1;
+ const maxValue = 60;
+
+function createItems() {
+  // Top spacer
+  for(let i=0; i<1; i++){
+    const spacer = document.createElement("div");
+    spacer.style.height = itemHeight + "px";
+    col.appendChild(spacer);
+  }
+
+  // Numbers 01–60
+  for(let i=minValue; i<=maxValue; i++){
     const el = document.createElement("div");
     el.className = "item";
     el.innerText = String(i).padStart(2,"0");
     col.appendChild(el);
   }
+
+  // Bottom spacer
+  for(let i=0; i<1; i++){
+    const spacer = document.createElement("div");
+    spacer.style.height = itemHeight + "px";
+    col.appendChild(spacer);
+  }
+}
 
   for(let i=0;i<spacerCount;i++){
     const spacer = document.createElement("div");
