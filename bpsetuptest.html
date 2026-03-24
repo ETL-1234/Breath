@@ -310,6 +310,8 @@ startBtn.classList.add("active");
 // --- START ---
 startBtn.onclick = () => {
 
+  const duration = localStorage.getItem("breath_duration") || 10;
+  localStorage.setItem("breath_duration", duration);
   localStorage.setItem("breath_spoken", spoken);
   localStorage.setItem("breath_bell", bell);
   localStorage.setItem("breath_music", music);
