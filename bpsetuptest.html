@@ -221,35 +221,28 @@ function createItems() {
 
   const minValue = 1;
   const maxValue = 60;
+  const repeat = 20; // creates long scroll illusion
 
-  // Top spacer
-  for(let i = 0; i < spacerCount; i++){
-    const spacer = document.createElement("div");
-    spacer.style.height = itemHeight + "px";
-    col.appendChild(spacer);
-  }
-
-  // Numbers
-  for(let i = minValue; i <= maxValue; i++){
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerText = String(i).padStart(2, "0");
-    col.appendChild(el);
-  }
-
-  // Bottom spacer
-  for(let i = 0; i < spacerCount; i++){
-    const spacer = document.createElement("div");
-    spacer.style.height = itemHeight + "px";
-    col.appendChild(spacer);
+  for(let r = 0; r < repeat; r++){
+    for(let i = minValue; i <= maxValue; i++){
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerText = String(i).padStart(2, "0");
+      col.appendChild(el);
+    }
   }
 }
   
 createItems();
 
 function scrollToValue(value){
-  const offset = col.offsetHeight / 2 - itemHeight / 2;
-  col.scrollTop = (value - 1 + spacerCount) * itemHeight - offset;
+
+  const totalItems = col.children.length;
+  const middleIndex = Math.floor(totalItems / 2);
+
+  const targetIndex = middleIndex + value;
+
+  col.scrollTop = targetIndex * itemHeight - (col.offsetHeight / 2 - itemHeight / 2);
 }
 
 scrollToValue(10);
@@ -266,9 +259,13 @@ function updateActive(){
 }
 
 function getValue(){
-  const offset = col.offsetHeight / 2 - itemHeight / 2;
-  const raw = Math.round((col.scrollTop + offset) / itemHeight);
-  return raw - spacerCount + 1;
+
+  const center = col.scrollTop + col.offsetHeight / 2;
+  const index = Math.round(center / itemHeight);
+
+  const value = ((index % 60) + 60) % 60 || 60;
+
+  return value;
 }
 
 let scrollTimeout;
