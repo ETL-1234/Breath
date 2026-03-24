@@ -262,7 +262,7 @@ function updateActive(){
   items.forEach(item=>{
     const offset = item.offsetTop + item.offsetHeight/2;
     const distance = Math.abs(center - offset);
-    item.classList.toggle("active", distance < 25);
+    item.classList.toggle("active", distance < itemHeight / 2);
   });
 }
 
