@@ -283,15 +283,6 @@ const musicText = document.getElementById("musicText");
 const designText = document.getElementById("designText");
 const startBtn = document.getElementById("startBtn");
 
-
-// --- DURATION (simple cycle for now) ---
-document.querySelector(".option-btn").onclick = () => {
-  const options = [5,8,10,15];
-  const i = options.indexOf(duration);
-  duration = options[(i+1)%options.length];
-  durationText.innerText = duration + " min";
-};
-
 // --- TOGGLES ---
 document.getElementById("spokenBtn").onclick = () => {
   spoken = !spoken;
