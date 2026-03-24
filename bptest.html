@@ -270,7 +270,8 @@ let bellVolume = 0.7;
 let ambientEnabled = true;
 let bellEnabled = true;
 let spokenEnabled = true;
-
+let enableCounting = false; //  master switch
+  
   const voice = {
   inhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/inhale.mp3"),
   exhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/exhale.mp3"),
@@ -561,7 +562,7 @@ async function startBreathing(){
   const remaining = Math.ceil((targetTime - performance.now()) / 1000) - 1;
 
   if(remaining !== lastSecondSpoken && remaining > 0){
-    playNumber(remaining);
+   if(enableCounting) playNumber(remaining);
     lastSecondSpoken = remaining;
   }
 
