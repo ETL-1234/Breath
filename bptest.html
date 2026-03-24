@@ -485,6 +485,11 @@ document.getElementById("duration").innerHTML =
 function applyTheme(p){
   const circle = document.getElementById("circle");
   const phase = document.getElementById("phase");
+ 
+  // Set default phase text color
+if(p.text_color){
+  phase.style.color = p.text_color;
+}
 
   // Background and text colors
   if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
