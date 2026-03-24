@@ -289,6 +289,11 @@ const userBell = localStorage.getItem("breath_bell");
 const userMusic = localStorage.getItem("breath_music");
 const userDesign = localStorage.getItem("breath_design");
 
+const ambientToggle = document.getElementById("ambientToggle");
+const resetBtn = document.getElementById("resetBtn");
+const bellToggle = document.getElementById("bellToggle");
+const spokenToggle = document.getElementById("spokenToggle");
+
 if(userDuration) totalTime = userDuration * 60;
 if(userSpoken !== null) spokenEnabled = userSpoken === "true";
 if(userBell !== null) bellEnabled = userBell === "true";
