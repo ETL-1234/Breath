@@ -273,10 +273,19 @@ let scrollTimeout;
 col.addEventListener("scroll", () => {
 
   updateActive();
+
+const totalHeight = col.scrollHeight;
+const visibleHeight = col.offsetHeight;
+
+if(col.scrollTop < itemHeight * 60){
+  col.scrollTop += itemHeight * 60 * 10;
+}
+else if(col.scrollTop > totalHeight - itemHeight * 60){
+  col.scrollTop -= itemHeight * 60 * 10;
+}
+  // --- save value after scroll stops ---
   clearTimeout(scrollTimeout);
-
   scrollTimeout = setTimeout(() => {
-
     const value = getValue();
     localStorage.setItem("breath_duration", value);
 
