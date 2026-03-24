@@ -289,11 +289,6 @@ const userBell = localStorage.getItem("breath_bell");
 const userMusic = localStorage.getItem("breath_music");
 const userDesign = localStorage.getItem("breath_design");
 
-// Sync UI with state (NOW SAFE)
-ambientToggle.classList.toggle("active", ambientEnabled);
-bellToggle.classList.toggle("active", bellEnabled);
-spokenToggle.classList.toggle("active", spokenEnabled);
-
 if(userDuration) totalTime = userDuration * 60;
 if(userSpoken !== null) spokenEnabled = userSpoken === "true";
 if(userBell !== null) bellEnabled = userBell === "true";
@@ -334,6 +329,11 @@ voice.hold.volume = 0.9;
   const resetBtn = document.getElementById("resetBtn");
   const bellToggle = document.getElementById("bellToggle");
   const spokenToggle = document.getElementById("spokenToggle");
+
+  // Sync UI with state (NOW SAFE)
+ambientToggle.classList.toggle("active", ambientEnabled);
+bellToggle.classList.toggle("active", bellEnabled);
+spokenToggle.classList.toggle("active", spokenEnabled);
 
 // Ambient Audio Toggle
 if (ambientToggle) {
