@@ -380,6 +380,11 @@ if (bellToggle) {
   });
 }
 
+const rippleCanvas = document.getElementById("rippleCanvas");
+const rippleCtx = rippleCanvas.getContext("2d");
+let ripples = [];
+  
+
 // Reset Practice
 if (resetBtn) {
   resetBtn.addEventListener("click", () => {
