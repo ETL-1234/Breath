@@ -294,12 +294,7 @@ if(userSpoken !== null) spokenEnabled = userSpoken === "true";
 if(userBell !== null) bellEnabled = userBell === "true";
 if(userMusic !== null) ambientEnabled = userMusic === "true";
 
-  // Sync UI with state
-ambientToggle.classList.toggle("active", ambientEnabled);
-bellToggle.classList.toggle("active", bellEnabled);
-spokenToggle.classList.toggle("active", spokenEnabled);
-  
-  const voice = {
+   const voice = {
   inhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/inhale.mp3"),
   exhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/exhale.mp3"),
   hold: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/hold.mp3"),
