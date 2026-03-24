@@ -606,9 +606,18 @@ function animateRipples(){
     r.alpha -= 0.01;
 
     rippleCtx.beginPath();
+
+    rippleCtx.shadowBlur = 12;
+    rippleCtx.shadowColor = `rgba(${hexToRgb(r.color)},0.3)`;
+
     rippleCtx.arc(cx,cy,r.radius,0,Math.PI*2);
-    rippleCtx.strokeStyle = `rgba(255,255,255,${r.alpha})`;
+
+    rippleCtx.strokeStyle = `rgba(${hexToRgb(r.color)},${r.alpha})`;
+    rippleCtx.lineWidth = r.thickness;
+
     rippleCtx.stroke();
+
+    rippleCtx.shadowBlur = 0;
   });
 
   ripples = ripples.filter(r=>r.alpha>0);
