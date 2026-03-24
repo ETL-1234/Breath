@@ -48,6 +48,48 @@ body{
   margin-top: -160px; /* pulls it closer to the title */
   margin-bottom: 40px; /* space before buttons */
 }
+
+  /* DURATION WHEEL */
+  .column{
+  height:160px;
+  width:100px;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+
+.column::-webkit-scrollbar{
+  display:none;
+}
+
+.item{
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  opacity:.4;
+  scroll-snap-align:center;
+}
+
+.item.active{
+  opacity:1;
+  font-weight:600;
+  transform:scale(1.05);
+}
+
+.highlight{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:100px;
+  height:44px;
+  border-top:1px solid rgba(255,255,255,0.2);
+  border-bottom:1px solid rgba(255,255,255,0.2);
+  pointer-events:none;
+}
   
 /* BUTTONS */
 
@@ -116,12 +158,14 @@ body{
 
 <h1 id="pageTitle">Practice Settings</h1>
 <p id="pageSubtitle">Breath practices</p>
-  
-<button class="option-btn">
-  <span class="label">Duration</span>
-  <span class="value" id="durationText">10 min</span>
-</button>
 
+  <div style="position:relative; margin-bottom:20px;">
+  <div id="minutes" class="column"></div>
+  <div class="highlight"></div>
+</div>
+
+<div class="label">minutes</div>
+  
 <button class="option-btn" id="spokenBtn">
   <span class="label">Spoken</span>
   <span class="value" id="spokenText">Off</span>
