@@ -715,6 +715,8 @@ if(userDesign === "ripple"){
 
   await new Promise(r => setTimeout(r,40));
 }
+clearInterval(rippleInterval); 
+    
     stepIndex = (stepIndex+1) % cycleSteps.length;
   }
 
