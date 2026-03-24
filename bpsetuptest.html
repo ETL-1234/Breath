@@ -277,12 +277,6 @@ col.addEventListener("scroll", () => {
 
   scrollTimeout = setTimeout(() => {
 
-    const offset = col.offsetHeight / 2 - itemHeight / 2;
-    const raw = Math.round((col.scrollTop + offset) / itemHeight);
-    const target = raw * itemHeight - offset;
-
-    col.scrollTo({ top: target, behavior: "smooth" });
-
     const value = getValue();
     localStorage.setItem("breath_duration", value);
 
