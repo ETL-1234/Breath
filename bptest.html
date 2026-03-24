@@ -264,7 +264,9 @@ const SUPABASE_KEY = "sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
 
 let practice = null;
 let cycleSteps = [];
+  
 let totalTime = 0;
+  
 let ambientAudio = null;
 let endAudio = null;
 let minScale = 1;
@@ -273,10 +275,25 @@ let animationCurve = "linear";
 let stopPractice = false;
 let ambientVolume = 0.5;
 let bellVolume = 0.7;
+  
 let ambientEnabled = true;
 let bellEnabled = true;
 let spokenEnabled = true;
+  
 let enableCounting = false; //  master switch
+
+// LOAD USER SETTINGS
+const userDuration = localStorage.getItem("breath_duration");
+const userSpoken = localStorage.getItem("breath_spoken");
+const userBell = localStorage.getItem("breath_bell");
+const userMusic = localStorage.getItem("breath_music");
+const userDesign = localStorage.getItem("breath_design");
+
+if(userDuration) totalTime = userDuration * 60;
+if(userSpoken !== null) spokenEnabled = userSpoken === "true";
+if(userBell !== null) bellEnabled = userBell === "true";
+if(userMusic !== null) ambientEnabled = userMusic === "true";
+  
   
   const voice = {
   inhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/inhale.mp3"),
