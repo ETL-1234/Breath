@@ -494,10 +494,19 @@ function hexToRgb(hex){
 
 // Render design
 function renderDesign(type){
+
+  // reset visibility
+  document.getElementById("circle").style.display = "block";
+  rippleCanvas.style.display = "none";
+
   switch(type){
-    case "wave": startWaveBreathing(); break;
+    case "ripple":
+      startRippleBreathing();
+      break;
+
     case "circle":
-    default: startCircleBreathing();
+    default:
+      startCircleBreathing();
   }
 }
 
@@ -561,6 +570,13 @@ function animateRipples(){
   // Ripple placeholder
 function startRippleBreathing(){ console.log("Ripple breathing loaded"); }
 
+  function startRippleBreathing(){
+  document.getElementById("circle").style.display = "none";
+  rippleCanvas.style.display = "block";
+
+  resizeRippleCanvas();
+  animateRipples();
+}
   
 // ======= Breathing Engine (Time Synced) =======
 async function startBreathing(){
