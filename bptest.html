@@ -564,9 +564,10 @@ function startCircleBreathing(){
   return true;
 }
 
-  function resizeRippleCanvas(){
-  rippleCanvas.width = rippleCanvas.offsetWidth;
-  rippleCanvas.height = rippleCanvas.offsetHeight;
+ function resizeRippleCanvas(){
+  const wrapper = document.getElementById("circleWrapper");
+  rippleCanvas.width = wrapper.clientWidth;
+  rippleCanvas.height = wrapper.clientHeight;
 }
 
 function emitRipples(count=4, delay=450, speed=1.3){
