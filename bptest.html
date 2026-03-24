@@ -684,6 +684,22 @@ if(userDesign === "ripple"){
 }
     
     phaseEl.innerText = step.label;
+
+// Dynamic phase color (matches ripple logic)
+let phaseColor = practice.text_color || "#ffffff";
+
+if(step.label === "Hold" && practice.hold_color){
+  phaseColor = practice.hold_color;
+}
+if(step.label === "Exhale" && practice.exhale_color){
+  phaseColor = practice.exhale_color;
+}
+if(step.label === "Inhale" && practice.circle_color){
+  phaseColor = practice.circle_color;
+}
+
+phaseEl.style.color = phaseColor;
+    
     lastSecondSpoken = null;
     playVoice(step.label);
 
