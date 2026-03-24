@@ -456,7 +456,7 @@ async function loadPractices(){
 }
 
     applyTheme(practice);
-    renderDesign(practice.design || "circle");
+    renderDesign(userDesign || practice.design || "circle");
 
   }catch(err){
     console.error(err);
