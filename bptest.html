@@ -508,9 +508,6 @@ function startCircleBreathing(){
   circle.style.transform = `scale(${minScale})`;
 }
 
-// Ripple placeholder
-function startRippleBreathing(){ console.log("Ripple breathing loaded"); }
-
   async function startCountdown(){
   const phaseEl = document.getElementById("phase");
 
@@ -525,6 +522,46 @@ function startRippleBreathing(){ console.log("Ripple breathing loaded"); }
   return true;
 }
 
+  function resizeRippleCanvas(){
+  rippleCanvas.width = rippleCanvas.offsetWidth;
+  rippleCanvas.height = rippleCanvas.offsetHeight;
+}
+
+function emitRipples(count=3){
+  for(let i=0;i<count;i++){
+    ripples.push({
+      radius:0,
+      alpha:1,
+      speed:1 + Math.random()*0.5
+    });
+  }
+}
+
+function animateRipples(){
+  rippleCtx.clearRect(0,0,rippleCanvas.width,rippleCanvas.height);
+
+  const cx = rippleCanvas.width/2;
+  const cy = rippleCanvas.height/2;
+
+  ripples.forEach(r=>{
+    r.radius += r.speed;
+    r.alpha -= 0.01;
+
+    rippleCtx.beginPath();
+    rippleCtx.arc(cx,cy,r.radius,0,Math.PI*2);
+    rippleCtx.strokeStyle = `rgba(255,255,255,${r.alpha})`;
+    rippleCtx.stroke();
+  });
+
+  ripples = ripples.filter(r=>r.alpha>0);
+
+  if(!stopPractice) requestAnimationFrame(animateRipples);
+}
+
+  // Ripple placeholder
+function startRippleBreathing(){ console.log("Ripple breathing loaded"); }
+
+  
 // ======= Breathing Engine (Time Synced) =======
 async function startBreathing(){
 
