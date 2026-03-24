@@ -442,7 +442,11 @@ async function loadPractices(){
 
     document.getElementById("title").innerText = practice.name;
     document.getElementById("description").innerText = practice.description || "";
-    document.getElementById("duration").innerHTML = `<strong>Duration:</strong> ${practice.practicetime} minutes`;
+
+    const displayDuration = userDuration || practice.practicetime;
+
+document.getElementById("duration").innerHTML =
+  `<strong>Duration:</strong> ${displayDuration} minutes`;
 
         minScale = practice.min_size || 1;
     maxScale = practice.max_size || 1.3;
