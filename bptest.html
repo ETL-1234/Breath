@@ -624,11 +624,8 @@ async function startBreathing(){
 
   while(!stopPractice && performance.now() < endTime){
 
-    const step = cycleSteps[stepIndex];
-    if(userDesign.design === "ripple"){
-  emitRipples(4);
-}
-
+  const step = cycleSteps[stepIndex];
+    
     phaseEl.innerText = step.label;
     lastSecondSpoken = null;
     playVoice(step.label);
