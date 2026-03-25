@@ -102,11 +102,16 @@ body{
 }
 
 .option-btn .label {
-  flex: 0 0 140px; /* fixed width for all labels */
+  flex: none;
+  width: 140px;
   color: white;    /* full white */
   font-style: normal; /* remove italic */
   opacity: 1; /* full opacity */
   text-align: left;
+}
+
+  .option-btn.column-mode .label {
+  width: 100%;
 }
 
 .option-btn .value {
@@ -152,6 +157,7 @@ body{
 <p id="pageSubtitle">Breath practices</p>
 
     <div class="option-btn" style="flex-direction:column; align-items:center; gap:6px; padding:10px 18px;">
+    <div class="option-btn column-mode" style="flex-direction:column; align-items:center; gap:6px; padding:10px 18px;">
 
   <div class="label" style="width:100%; text-align:left;">Duration</div>
 
