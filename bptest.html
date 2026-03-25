@@ -724,8 +724,11 @@ if(glowColor){
   const base = 80 * opacity;
 
   // Extra boost when small (this is the key fix)
-  const scaleBoost = step.label === "Exhale" ? 1.6 : 1.2;
-
+ const scaleBoost =
+  step.label === "Exhale" ? 1.8 :
+  step.label === "Hold" ? 1.4 : 
+  1.2;
+  
   const glowSize = base * scaleBoost;
 
   // Multi-layer glow (much richer + visible)
