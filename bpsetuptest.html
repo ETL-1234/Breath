@@ -289,11 +289,7 @@ else if(col.scrollTop > totalHeight - itemHeight * 60){
 }
   // --- save value after scroll stops ---
   clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
-    const value = getValue();
-    localStorage.setItem("breath_duration", value);
 
-  }, 80);
 });
 
 setTimeout(updateActive, 50);
