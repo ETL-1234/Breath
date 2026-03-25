@@ -529,6 +529,17 @@ function hexToRgb(hex){
   const b = bigint & 255;
   return `${r},${g},${b}`;
 }
+
+  function mixColors(c1, c2, ratio){
+  const rgb1 = hexToRgb(c1).split(',').map(Number);
+  const rgb2 = hexToRgb(c2).split(',').map(Number);
+
+  const mixed = rgb1.map((v,i) =>
+    Math.round(v + (rgb2[i] - v) * ratio)
+  );
+
+  return `rgb(${mixed.join(",")})`;
+}
  
 
 // Render design
