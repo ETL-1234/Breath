@@ -289,7 +289,7 @@ let spokenEnabled = false;
 let enableCounting = false; //  master switch
 
 // LOAD USER SETTINGS
-const userDuration = localStorage.getItem("breath_duration");
+const userDuration = parseInt(localStorage.getItem("breath_duration"), 10);
 const userSpoken = localStorage.getItem("breath_spoken");
 const userBell = localStorage.getItem("breath_bell");
 const userMusic = localStorage.getItem("breath_music");
