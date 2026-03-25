@@ -253,12 +253,23 @@ function updateActive(){
 
 function getValue(){
 
+  const items = col.querySelectorAll(".item");
   const center = col.scrollTop + col.offsetHeight / 2;
-  const index = Math.round(center / itemHeight);
 
-  const value = ((index % 60) + 60) % 60 || 60;
+  let closest = null;
+  let closestDistance = Infinity;
 
-  return value;
+  items.forEach(item => {
+    const itemCenter = item.offsetTop + item.offsetHeight / 2;
+    const distance = Math.abs(center - itemCenter);
+
+    if(distance < closestDistance){
+      closestDistance = distance;
+      closest = item;
+    }
+  });
+
+  return parseInt(closest.innerText, 10);
 }
 
 let scrollTimeout;
