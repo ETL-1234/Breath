@@ -450,7 +450,7 @@ async function loadPractices(){
     document.getElementById("title").innerText = practice.name;
     document.getElementById("description").innerText = practice.description || "";
 
-    const displayDuration = !isNaN(userDuration) ? userDuration : practice.practicetime;
+    const displayDuration = Math.round(totalTime / 60);
 
 document.getElementById("duration").innerHTML =
   `<strong>Duration:</strong> ${displayDuration} minutes`;
