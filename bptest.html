@@ -693,12 +693,7 @@ if(step.label === "Hold" && practice.hold_color){
 }
     
 if(step.label === "Exhale" && practice.exhale_color){
-  // Start slightly blended instead of full switch
-  phaseColor = mixColors(
-    practice.circle_color || "#ffffff",
-    practice.exhale_color,
-    0.6 // 0 = old color, 1 = full exhale
-  );
+  phaseColor = practice.exhale_color;
 }
     
 if(step.label === "Inhale" && practice.circle_color){
