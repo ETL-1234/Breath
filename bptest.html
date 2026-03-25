@@ -720,10 +720,10 @@ circle.style.borderColor = phaseColor;
       
       if(step.label === "Inhale"){
         circle.style.boxShadow =
-          `0 0 ${60*(practice.opacity??1)+30*maxScale}px ${practice.glow_color}`;
+          `0 0 ${60*(practice.opacity??1)+30*maxScale}px ${glowColor}`;
       }else{
         circle.style.boxShadow =
-          `0 0 ${60*(practice.opacity??1)}px ${practice.glow_color}`;
+         `0 0 ${60*(practice.opacity??1)}px ${glowColor}`;
       }
     }
 
