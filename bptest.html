@@ -715,17 +715,26 @@ circle.style.borderColor = phaseColor;
 
     circle.style.transform = `scale(${currentScale})`;
 
-    const glowColor = phaseColor;
-    if(glowColor){
-      
-      if(step.label === "Inhale"){
-        circle.style.boxShadow =
-          `0 0 ${60*(practice.opacity??1)+30*maxScale}px ${glowColor}`;
-      }else{
-        circle.style.boxShadow =
-         `0 0 ${60*(practice.opacity??1)}px ${glowColor}`;
-      }
-    }
+   const glowColor = phaseColor;
+const opacity = practice.opacity ?? 1;
+
+if(glowColor){
+
+  // Stronger base intensity (fixes dark colors disappearing)
+  const base = 80 * opacity;
+
+  // Extra boost when small (this is the key fix)
+  const scaleBoost = step.label === "Exhale" ? 1.6 : 1.2;
+
+  const glowSize = base * scaleBoost;
+
+  // Multi-layer glow (much richer + visible)
+  circle.style.boxShadow = `
+    0 0 ${glowSize * 0.6}px ${glowColor},
+    0 0 ${glowSize}px ${glowColor},
+    0 0 ${glowSize * 1.6}px ${glowColor}
+  `;
+}
 
     const targetTime = performance.now() + step.seconds*1000;
 
