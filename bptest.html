@@ -699,6 +699,9 @@ if(step.label === "Inhale" && practice.circle_color){
 }
 
 phaseEl.style.color = phaseColor;
+
+    // APPLY SAME COLOR TO CIRCLE BORDER
+circle.style.borderColor = phaseColor;
     
     lastSecondSpoken = null;
     playVoice(step.label);
