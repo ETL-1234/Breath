@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Breathing Practice</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --circle-size: min(70vw, 420px);
+  --text-color: #ffffff;
+  --circle-color: #ffffff;
+  --bg-color: #ffffff;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg-color);
+  color:var(--text-color);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  height:100vh;
+  text-align:center;
+  padding-top:60px;
+}
+
+#header{
+  margin-bottom:40px;
+}
+
+#title{
+  font-size:clamp(22px,3vw,30px);
+  font-weight:600;
+}
+
+#description{
+  font-size:clamp(14px,2vw,18px);
+  font-style:italic;
+  opacity:.7;
+  margin-top:6px;
+  margin-bottom:6px;
+  transition: opacity .6s ease;
+}
+
+  #duration{
+  font-style:italic;
+  margin-top:2px;
+  opacity:.7;
+  font-size:clamp(14px,2vw,18px);
+  margin-bottom:40px;
+  transition: opacity .6s ease;
+}
+
+  #duration strong{
+  font-weight:600;
+  opacity:.7;
+}
+
+  .fade-out{
+  opacity:0 !important;
+}
+
+  #circleWrapper{
+  position: relative;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:80px;
+}
+  
+#circle{
+  width:var(--circle-size);
+  height:var(--circle-size);
+  opacity: 1;
+  border-radius:50%;
+  border:3px solid var(--circle-color);
+  transition-property: transform, box-shadow;
+  will-change: transform, box-shadow;
+  }
+
+  #rippleCanvas{
+  position:absolute;
+  width:100%;
+  height:100%;
+}
+
+#phase{
+  position:absolute;
+  font-weight:600;
+  font-size:28px;   
+  pointer-events:none;
+ }
+
+ #startBtn{
+width:80px;
+height:80px;
+border-radius:50%;
+border:none;
+background:rgba(255,255,255,0.2);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+  #startBtn svg{
+width:36px;
+height:36px;
+fill:white;
+}
+
+  #audioControls{
+  margin-top:28px;
+  display:flex;
+  gap:22px;
+}
+
+.audioBtn.active{
+background:rgba(255,255,255,0.2);
+border:none;
+}
+
+  .iconBtn{
+width:80px;
+height:80px;
+border-radius:50%;
+border:none;
+background:rgba(255,255,255,0.2);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+.iconBtn svg{
+width:34px;
+height:34px;
+fill:white;
+}
+
+ .audioBtn{
+width:64px;
+height:64px;
+border-radius:50%;
+border:none;
+background:rgba(255,255,255,0.2);
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+cursor:pointer;
+transition:transform .15s ease, background .2s ease;
+}
+
+.audioBtn svg{
+width:32px;
+height:32px;
+fill:var(--text-color);
+}
+
+.audioBtn .strike{
+position:absolute;
+width:80%;
+height:2px;
+background:var(--text-color);
+transform:rotate(-45deg);
+opacity:0;
+}
+
+.audioBtn:not(.active) .strike{
+opacity:1;
+}
+
+  .audioBtn:active,
+.iconBtn:active{
+transform:scale(.92);
+}
+
+  #resetBtn svg{
+width:36px;
+height:36px;
+}
+
+  #resetBtn svg{
+transition: transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+
+#resetBtn.spin svg{
+transform: rotate(200deg) scale(1.08);
+}
+  
+</style>
+</head>
+
+<body>
+
+<div id="header">
+  <div id="title">Breathing</div>
+  <div id="description"></div>
+  <div id="duration"></div>
+</div>
+
+<div id="circleWrapper">
+
+  <!-- Circle -->
+  <div id="circle"></div>
+
+  <!-- Ripple -->
+  <canvas id="rippleCanvas" style="display:none;"></canvas>
+
+  <div id="phase">Ready</div>
+</div>
+
+<button id="startBtn" class="iconBtn">
+<svg id="playIcon" viewBox="0 0 24 24">
+<polygon points="6,4 20,12 6,20"></polygon>
+</svg>
+
+<svg id="pauseIcon" viewBox="0 0 24 24" style="display:none">
+<rect x="6" y="4" width="4" height="16"></rect>
+<rect x="14" y="4" width="4" height="16"></rect>
+</svg>
+</button>
+
+<div id="audioControls">
+
+<button id="ambientToggle" class="audioBtn active">
+<svg viewBox="0 0 24 24">
+<path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+</svg>
+<span class="strike"></span>
+</button>
+
+<button id="resetBtn" class="audioBtn">
+<svg viewBox="0 0 24 24">
+<path d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/>
+</svg>
+</button>
+
+<button id="bellToggle" class="audioBtn active">
+<svg viewBox="0 0 24 24">
+<path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 1 0-12 0v5L4 18v1h16v-1l-2-2z"/>
+</svg>
+<span class="strike"></span>
+</button>
+
+ <button id="spokenToggle" class="audioBtn">
+<svg viewBox="0 0 24 24">
+  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+</svg>
+<span class="strike"></span>
+</button>
+
+</div>
+
+<script>
+const SUPABASE_URL = "https://tppyzexttkuvcobbbmaz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
+
+let practice = null;
+let cycleSteps = [];
+  
+let totalTime = 0;
+  
+let ambientAudio = null;
+let endAudio = null;
+let minScale = 1;
+let maxScale = 1.3;
+let animationCurve = "linear";
+let stopPractice = false;
+let ambientVolume = 0.5;
+let bellVolume = 0.7;
+  
+let ambientEnabled = false;
+let bellEnabled = false;
+let spokenEnabled = false;
+  
+let enableCounting = false; //  master switch
+
+// LOAD USER SETTINGS
+const userDuration = parseInt(localStorage.getItem("breath_duration"), 10);
+const userSpoken = localStorage.getItem("breath_spoken");
+const userBell = localStorage.getItem("breath_bell");
+const userMusic = localStorage.getItem("breath_music");
+const userDesign = localStorage.getItem("breath_design");
+
+if(!isNaN(userDuration)) totalTime = userDuration * 60;
+if(userSpoken !== null) spokenEnabled = userSpoken === "true";
+if(userBell !== null) bellEnabled = userBell === "true";
+if(userMusic !== null) ambientEnabled = userMusic === "true";
+
+   const voice = {
+  inhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/inhale.mp3"),
+  exhale: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/exhale.mp3"),
+  hold: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/hold.mp3"),
+  numbers: {
+    1: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/1.mp3"),
+    2: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/2.mp3"),
+    3: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/3.mp3"),
+    4: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/4.mp3"),
+    5: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/5.mp3"),
+    6: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/6.mp3"),
+    7: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/7.mp3"),
+    8: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/8.mp3"),
+    9: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/9.mp3"),
+    10: new Audio("https://tppyzexttkuvcobbbmaz.supabase.co/storage/v1/object/public/PracticeBreath/Spokenguidance/10.mp3")
+  }
+};
+
+Object.values(voice.numbers).forEach(a => a.volume = 0.20); // softer numbers
+voice.inhale.volume = 0.9;
+voice.exhale.volume = 0.9;
+voice.hold.volume = 0.9;
+
+  
+  const titleEl = document.getElementById("title");
+  const descriptionEl = document.getElementById("description");
+  const durationEl = document.getElementById("duration");
+
+  const playIcon = document.getElementById("playIcon");
+  const pauseIcon = document.getElementById("pauseIcon");
+
+  const ambientToggle = document.getElementById("ambientToggle");
+  const resetBtn = document.getElementById("resetBtn");
+  const bellToggle = document.getElementById("bellToggle");
+  const spokenToggle = document.getElementById("spokenToggle");
+
+  // Sync UI with state (NOW SAFE)
+ambientToggle.classList.toggle("active", ambientEnabled);
+bellToggle.classList.toggle("active", bellEnabled);
+spokenToggle.classList.toggle("active", spokenEnabled);
+
+// Ambient Audio Toggle
+if (ambientToggle) {
+  ambientToggle.addEventListener("click", () => {
+    ambientEnabled = !ambientEnabled;
+    ambientToggle.classList.toggle("active", ambientEnabled);
+
+    if (!ambientAudio && practice?.audio_url) {
+      ambientAudio = new Audio(practice.audio_url);
+      ambientAudio.loop = true;
+      ambientAudio.volume = ambientVolume;
+    }
+
+    if (ambientAudio) {
+      if (ambientEnabled) {
+        ambientAudio.currentTime = 0; // restart from beginning
+        ambientAudio.play().catch(()=>{});
+      } else {
+        ambientAudio.pause();
+      }
+    }
+  });
+}
+
+// Bell Toggle
+if (bellToggle) {
+  bellToggle.addEventListener("click", () => {
+    bellEnabled = !bellEnabled;
+    bellToggle.classList.toggle("active", bellEnabled);
+
+    // Optional: stop any bell currently playing
+    if (endAudio && !bellEnabled) {
+      endAudio.pause();
+      endAudio.currentTime = 0; // reset to start
+    }
+  });
+}
+
+  // Spoken Toggle
+  if (spokenToggle) {
+  spokenToggle.addEventListener("click", () => {
+    spokenEnabled = !spokenEnabled;
+    spokenToggle.classList.toggle("active", spokenEnabled);
+  });
+}
+
+const rippleCanvas = document.getElementById("rippleCanvas");
+const rippleCtx = rippleCanvas.getContext("2d");
+let ripples = [];
+let stepIndex = 0; 
+  
+
+// Reset Practice
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+
+  resetBtn.classList.add("spin");
+  setTimeout(()=> resetBtn.classList.remove("spin"), 450);
+
+    stopPractice = true;
+
+    const circle = document.getElementById("circle");
+    const phaseEl = document.getElementById("phase");
+
+    // Stop audio
+    if(ambientAudio){
+      ambientAudio.pause();
+      ambientAudio.currentTime = 0;
+    }
+
+    if(endAudio){
+      endAudio.pause();
+      endAudio.currentTime = 0;
+    }
+
+    // Reset visuals
+    circle.style.transform = `scale(${minScale})`;
+    circle.style.boxShadow = practice.glow_color
+      ? `0 0 40px ${practice.glow_color}`
+      : "";
+
+    phaseEl.innerText = "Ready";
+    spokenToggle.classList.toggle("active", spokenEnabled);
+
+    // Reset button UI
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+
+    titleEl.classList.remove("fade-out");
+    descriptionEl.classList.remove("fade-out");
+    durationEl.classList.remove("fade-out");
+
+  });
+}
+
+// Load practice
+async function loadPractices(){
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/breathpractice_with_theme?select=*&id=eq.1`,{
+      headers:{apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`}
+    });
+    if(!res.ok) throw new Error(`Supabase error ${res.status}`);
+
+    const data = await res.json();
+    practice = data[0];
+    if(!practice){ alert("No practice found"); return; }
+
+    document.getElementById("title").innerText = practice.name;
+    document.getElementById("description").innerText = practice.description || "";
+
+    const displayDuration = Math.round(totalTime / 60);
+
+document.getElementById("duration").innerHTML =
+  `<strong>Duration:</strong> ${displayDuration} minutes`;
+
+        minScale = practice.min_size || 1;
+    maxScale = practice.max_size || 1.3;
+    animationCurve = practice.animation_curve || "linear";
+
+    cycleSteps = [
+      {label:"Inhale", seconds:practice.inhale_seconds},
+      {label:"Hold", seconds:practice.hold1_seconds},
+      {label:"Exhale", seconds:practice.exhale_seconds},
+      {label:"Hold", seconds:practice.hold2_seconds}
+    ].filter(s => (s.seconds??0)>0);
+
+    if(!totalTime){
+  totalTime = practice.practicetime * 60;
+}
+
+    applyTheme(practice);
+   renderDesign(userDesign === "ripple" ? "ripple" : "circle");
+
+  }catch(err){
+    console.error(err);
+    alert("Failed to load practice");
+  }
+}
+
+// Apply theme
+
+// ===== Apply theme =====
+function applyTheme(p){
+  const circle = document.getElementById("circle");
+  const phase = document.getElementById("phase");
+ 
+  // Set default phase text color
+if(p.text_color){
+  phase.style.color = p.text_color;
+}
+
+  // Background and text colors
+  if(p.bg_color) document.documentElement.style.setProperty("--bg-color", p.bg_color);
+  if(p.text_color) document.documentElement.style.setProperty("--text-color", p.text_color);
+  if(p.circle_color) document.documentElement.style.setProperty("--circle-color", p.circle_color);
+
+  // New background image logic
+  if(p.bg_image){
+    const overlayColor = p.bg_overlay_color || "#000000";
+    const opacity = (p.bg_opacity ?? 50) / 100; // default 50%
+    document.body.style.background = `
+      linear-gradient(rgba(${hexToRgb(overlayColor)}, ${opacity}), rgba(${hexToRgb(overlayColor)}, ${opacity})),
+      url(${p.bg_image}) center/cover no-repeat
+    `;
+  } 
+  // fallback to gradients if no bg_image
+  else if(p.bg_start_gradient && p.bg_end_gradient){
+    document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
+  }
+
+  // Single opacity setting (controls circle, text, and glow)
+  const opacity = p.opacity ?? 1; // default full opacity if not set
+  circle.style.opacity = opacity;
+
+  // Glow using opacity to scale intensity
+  if(p.glow_color){
+    circle.style.boxShadow = `0 0 ${40 * opacity}px ${p.glow_color}`;
+  }
+}
+
+// helper function to convert hex to rgb for overlay
+function hexToRgb(hex){
+  const clean = hex.replace("#","").trim();
+  const bigint = parseInt(clean,16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `${r},${g},${b}`;
+}
+
+ 
+// Render design
+function renderDesign(type){
+
+  // reset visibility
+  document.getElementById("circle").style.display = "block";
+  rippleCanvas.style.display = "none";
+
+  switch(type){
+    case "ripple":
+      startRippleBreathing();
+      break;
+
+    case "circle":
+    default:
+      startCircleBreathing();
+  }
+}
+
+// Circle placeholder
+function startCircleBreathing(){
+  const circle = document.getElementById("circle");
+  circle.style.transition = `transform 1s linear, box-shadow 1s linear`;
+  circle.style.transform = `scale(${minScale})`;
+}
+
+  async function startCountdown(){
+  const phaseEl = document.getElementById("phase");
+
+  const steps = ["3","2","1","Inhale"];
+
+  for(const s of steps){
+    phaseEl.innerText = s;
+    await new Promise(r => setTimeout(r,1000));
+    if(stopPractice) return false;
+  }
+
+  return true;
+}
+
+ function resizeRippleCanvas(){
+  const wrapper = document.getElementById("circleWrapper");
+  rippleCanvas.width = wrapper.clientWidth;
+  rippleCanvas.height = wrapper.clientHeight;
+}
+
+function emitRipples(count=4, delay=450, speed=1.3){
+
+  let i = 0;
+
+  const interval = setInterval(()=>{
+
+    let rippleColor = practice.circle_color || "#ffffff";
+
+    const step = cycleSteps[stepIndex];
+    if(step.label === "Hold" && practice.hold_color) rippleColor = practice.hold_color;
+    if(step.label === "Exhale" && practice.exhale_color) rippleColor = practice.exhale_color;
+
+    ripples.push({
+      radius:Math.random()*4,
+      speed:speed + Math.random()*0.6,
+      alpha:1,
+      thickness: Math.random() > .6 ? 4 : 1.2,
+      color:rippleColor
+    });
+
+    i++;
+    if(i>=count) clearInterval(interval);
+
+  },delay);
+}
+
+function animateRipples(){
+  rippleCtx.clearRect(0,0,rippleCanvas.width,rippleCanvas.height);
+
+  const cx = rippleCanvas.width/2;
+  const cy = rippleCanvas.height/2;
+
+  ripples.forEach(r=>{
+    r.radius += r.speed;
+    r.alpha -= 0.01;
+
+    rippleCtx.beginPath();
+
+    rippleCtx.shadowBlur = 12;
+    rippleCtx.shadowColor = `rgba(${hexToRgb(r.color)},0.3)`;
+
+    rippleCtx.arc(cx,cy,r.radius,0,Math.PI*2);
+
+    rippleCtx.strokeStyle = `rgba(${hexToRgb(r.color)},${r.alpha})`;
+    rippleCtx.lineWidth = r.thickness;
+
+    rippleCtx.stroke();
+
+    rippleCtx.shadowBlur = 0;
+  });
+
+  ripples = ripples.filter(r=>r.alpha>0);
+
+  if(!stopPractice) requestAnimationFrame(animateRipples);
+}
+
+  // Ripple placeholder
+  function startRippleBreathing(){
+  document.getElementById("circle").style.display = "none";
+  rippleCanvas.style.display = "block";
+
+  resizeRippleCanvas();
+  }
+  
+// ======= Breathing Engine (Time Synced) =======
+async function startBreathing(){
+
+  const circle = document.getElementById("circle");
+  const phaseEl = document.getElementById("phase");
+
+  const startTime = performance.now();
+  const endTime = startTime + totalTime*1000;
+
+  let currentScale = minScale;
+  let lastSecondSpoken = null;
+
+  while(!stopPractice && performance.now() < endTime){
+
+  const step = cycleSteps[stepIndex];
+
+  let rippleInterval;
+
+  if(userDesign === "ripple"){
+    if(step.label==="Inhale"){
+      rippleInterval = setInterval(()=> emitRipples(2,0,1.5),350);
+    }
+    else if(step.label==="Exhale"){
+      rippleInterval = setInterval(()=> emitRipples(2,0,1.2),420);
+    }
+    else{
+      rippleInterval = setInterval(()=> emitRipples(1,0,1),500);
+    }
+  }
+
+if(userDesign === "ripple"){
+
+  if(step.label==="Inhale"){
+    rippleInterval = setInterval(()=> emitRipples(2,0,1.5),350);
+  }
+  else if(step.label==="Exhale"){
+    rippleInterval = setInterval(()=> emitRipples(2,0,1.2),420);
+  }
+  else{
+    rippleInterval = setInterval(()=> emitRipples(1,0,1),500);
+  }
+}
+    
+    phaseEl.innerText = step.label;
+
+// Dynamic phase color (matches ripple logic)
+let phaseColor = practice.text_color || "#ffffff";
+
+if(step.label === "Hold" && practice.hold_color){
+  phaseColor = practice.hold_color;
+}
+    
+if(step.label === "Exhale" && practice.exhale_color){
+  phaseColor = practice.exhale_color;
+}
+    
+if(step.label === "Inhale" && practice.circle_color){
+  phaseColor = practice.circle_color;
+}
+
+phaseEl.style.color = phaseColor;
+
+    // APPLY SAME COLOR TO CIRCLE BORDER
+circle.style.borderColor = phaseColor;
+    
+    lastSecondSpoken = null;
+    playVoice(step.label);
+
+    if(step.label === "Inhale") currentScale = maxScale;
+    else if(step.label === "Exhale") currentScale = minScale;
+
+    circle.style.transition =
+      `transform ${step.seconds}s ${animationCurve},
+       box-shadow ${step.seconds}s ${animationCurve}`;
+
+    circle.style.transform = `scale(${currentScale})`;
+
+   const glowColor = phaseColor;
+const opacity = practice.opacity ?? 1;
+
+if(glowColor){
+
+  // Stronger base intensity (fixes dark colors disappearing)
+  const base = 80 * opacity;
+
+  // Extra boost when small (this is the key fix)
+ const scaleBoost =
+  step.label === "Exhale" ? 1.8 :
+  step.label === "Hold" ? 1.4 : 
+  1.2;
+  
+  const glowSize = base * scaleBoost;
+
+  // Multi-layer glow (much richer + visible)
+  circle.style.boxShadow = `
+    0 0 ${glowSize * 0.6}px ${glowColor},
+    0 0 ${glowSize}px ${glowColor},
+    0 0 ${glowSize * 1.6}px ${glowColor}
+  `;
+}
+
+    const targetTime = performance.now() + step.seconds*1000;
+
+    while(performance.now() < targetTime){
+  if(stopPractice) break;
+
+  const remaining = Math.ceil((targetTime - performance.now()) / 1000) - 1;
+
+  if(remaining !== lastSecondSpoken && remaining > 0){
+   if(enableCounting) playNumber(remaining);
+    lastSecondSpoken = remaining;
+  }
+
+  await new Promise(r => setTimeout(r,40));
+}
+clearInterval(rippleInterval); 
+    
+    stepIndex = (stepIndex+1) % cycleSteps.length;
+  }
+
+  if(!stopPractice) finishPractice();
+
+  if(rippleInterval) clearInterval(rippleInterval);
+}
+// End
+
+  function fadeOutAudio(audio, duration = 2000){
+  return new Promise(resolve => {
+    if(!audio) return resolve();
+
+    const startVolume = audio.volume;
+    const stepTime = 50;
+    const steps = duration / stepTime;
+    const volumeStep = startVolume / steps;
+
+    const fade = setInterval(()=>{
+      if(audio.volume > volumeStep){
+        audio.volume -= volumeStep;
+      } else {
+        audio.volume = 0;
+        clearInterval(fade);
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = startVolume; // reset for next session
+        resolve();
+      }
+    }, stepTime);
+  });
+}
+
+function playVoice(label){
+  if(!spokenEnabled) return;
+
+  const base = voice[label.toLowerCase()];
+  if(base){
+    const audio = base.cloneNode();
+    audio.volume = base.volume;
+    audio.play().catch(()=>{});
+  }
+}
+
+function playNumber(n){
+  if(!spokenEnabled) return;
+
+  const base = voice.numbers[n];
+  if(base){
+    const audio = base.cloneNode();
+    audio.volume = base.volume;
+    audio.play().catch(()=>{});
+  }
+}
+  
+async function finishPractice(){
+  const phaseEl = document.getElementById("phase");
+  phaseEl.innerText = "Complete";
+
+  titleEl.classList.remove("fade-out");
+  descriptionEl.classList.remove("fade-out");
+  durationEl.classList.remove("fade-out");
+
+  await fadeOutAudio(ambientAudio, 2000);
+  
+  if(endAudio && bellEnabled){
+    endAudio.volume = bellVolume;
+    endAudio.play();
+  }
+}
+
+// Button
+const startBtn = document.getElementById("startBtn");
+
+startBtn.addEventListener("click", async () => {
+  const circle = document.getElementById("circle");
+  const phaseEl = document.getElementById("phase");
+
+ if(playIcon.style.display !== "none"){
+    stopPractice = false;
+    playIcon.style.display = "none";
+    pauseIcon.style.display = "block";
+
+    titleEl.classList.add("fade-out");
+    descriptionEl.classList.add("fade-out");
+    durationEl.classList.add("fade-out");
+
+    // Reset circle to minScale when starting
+    circle.style.transform = `scale(${minScale})`;
+    phaseEl.innerText = "Ready";
+
+    if(practice.audio_url && ambientEnabled){
+
+  if(!ambientAudio){
+    ambientAudio = new Audio(practice.audio_url);
+    ambientAudio.loop = true;
+    ambientAudio.volume = ambientVolume;
+  }
+
+  ambientAudio.currentTime = 0;
+  ambientAudio.play().catch(()=>{});
+}
+    if(practice.audio_end_url) endAudio = new Audio(practice.audio_end_url);
+
+   // breathing loop
+    const ready = await startCountdown();
+    if(!ready) return;
+  if(userDesign === "ripple"){
+  ripples = [];        // reset ripples
+  animateRipples();    // start animation
+}
+
+    await startBreathing(); 
+
+    // Reset button after finish
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+   
+  } else {
+    // Stop button clicked
+    stopPractice = true;
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+    
+    titleEl.classList.remove("fade-out");
+    descriptionEl.classList.remove("fade-out");
+    durationEl.classList.remove("fade-out");
+
+    if(ambientAudio){
+  ambientAudio.pause();
+  ambientAudio.currentTime = 0;
+}
+    if(endAudio) endAudio.pause();
+
+    phaseEl.innerText = "Paused";
+    circle.style.transform = `scale(${minScale})`;
+    circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
+  }
+});
+  
+// Load on start
+loadPractices();
+</script>
+
+</body>
+</html>
