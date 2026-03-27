@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Breath Recording Timer</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #232f52;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+/* TIMER */
+#timer {
+  font-size: 48px;
+  margin-top: 20px;
+}
+
+/* SELECTOR */
+#controls {
+  margin: 20px;
+}
+
+button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 8px 12px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+button.active {
+  background: white;
+  color: #232f52;
+}
+
+/* CIRCLES */
+#circles {
+  display: flex;
+  gap: 10px;
+  margin: 20px;
+}
+
+.circle {
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #232f52;
+  background: transparent;
+  transition: all 0.4s ease;
+}
+
+.circle.inhale {
+  background: white;
+}
+
+.circle.exhale {
+  background: #4da6ff;
+}
+
+/* BUTTONS */
+#bottom-controls {
+  margin-bottom: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="timer">00:00</div>
+
+<div id="controls">
+  <span>Select breaths/min:</span><br>
+  <button onclick="setRate(4)">4</button>
+  <button onclick="setRate(5)">5</button>
+  <button onclick="setRate(6)">6</button>
+  <button onclick="setRate(7)">7</button>
+  <button onclick="setRate(8)">8</button>
+</div>
+
+<div id="circles"></div>
+
+<div id="bottom-controls">
+  <button onclick="startPause()">Start / Pause</button>
+  <button onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+let breathRate = 4;
+let interval = null;
+let seconds = 0;
+let running = false;
+
+let cycleIndex = 0;
+let phase = "inhale"; // inhale -> exhale
+
+function setRate(rate) {
+  breathRate = rate;
+  document.querySelectorAll("#controls button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+  createCircles();
+  resetCycles();
+}
+
+function createCircles() {
+  const container = document.getElementById("circles");
+  container.innerHTML = "";
+
+  for (let i = 0; i < breathRate; i++) {
+    const c = document.createElement("div");
+    c.className = "circle";
+    c.innerText = i + 1;
+    container.appendChild(c);
+  }
+}
+
+function updateTimer() {
+  seconds++;
+  let min = String(Math.floor(seconds / 60)).padStart(2, '0');
+  let sec = String(seconds % 60).padStart(2, '0');
+  document.getElementById("timer").innerText = `${min}:${sec}`;
+}
+
+function breathStep() {
+  const circles = document.querySelectorAll(".circle");
+  if (circles.length === 0) return;
+
+  const cycleTime = 60 / breathRate;
+  const halfCycle = cycleTime / 2;
+
+  const currentTime = seconds % 60;
+  const currentCycle = Math.floor(currentTime / cycleTime);
+
+  if (currentCycle !== cycleIndex) {
+    cycleIndex = currentCycle;
+    phase = "inhale";
+  }
+
+  let progress = (currentTime % cycleTime);
+
+  let circle = circles[cycleIndex];
+
+  if (progress < halfCycle) {
+    // inhale
+    circle.classList.remove("exhale");
+    circle.classList.add("inhale");
+  } else {
+    // exhale
+    circle.classList.remove("inhale");
+    circle.classList.add("exhale");
+  }
+
+  // reset after full minute
+  if (currentTime === 0) {
+    resetCycles();
+  }
+}
+
+function resetCycles() {
+  document.querySelectorAll(".circle").forEach(c => {
+    c.classList.remove("inhale", "exhale");
+  });
+}
+
+function loop() {
+  updateTimer();
+  breathStep();
+}
+
+function startPause() {
+  if (!running) {
+    interval = setInterval(loop, 1000);
+    running = true;
+  } else {
+    clearInterval(interval);
+    running = false;
+  }
+}
+
+function resetAll() {
+  clearInterval(interval);
+  running = false;
+  seconds = 0;
+  cycleIndex = 0;
+  document.getElementById("timer").innerText = "00:00";
+  resetCycles();
+}
+
+createCircles();
+</script>
+
+</body>
+</html>
