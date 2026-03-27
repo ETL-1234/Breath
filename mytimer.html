@@ -17,12 +17,12 @@ body {
   height: 100vh;
 }
 
-/* CONTAINER */
+/* MAIN CONTAINER */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
 /* TIMER */
@@ -31,7 +31,7 @@ body {
 }
 
 /* SELECT BUTTONS */
-.row {
+#controls {
   display: flex;
   gap: 10px;
 }
@@ -43,7 +43,9 @@ body {
   background: transparent;
   color: white;
   border-radius: 12px;
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .select-btn.active {
@@ -55,7 +57,6 @@ body {
 #circles {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
 }
 
 .circle {
@@ -70,7 +71,6 @@ body {
 
   color: #232f52;
   background: transparent;
-
   transition: all 0.4s ease;
 }
 
@@ -82,16 +82,10 @@ body {
   background: #b4cadb;
 }
 
-/* GLOW CUE */
-.circle.cue {
-  box-shadow: 0 0 12px 4px rgba(255,255,255,0.6);
-}
-
-/* EXTRA SPACE BEFORE BUTTONS */
+/* BOTTOM BUTTONS */
 #bottom-controls {
   display: flex;
   gap: 10px;
-  margin-top: 40px;
 }
 
 .control-btn {
@@ -101,7 +95,9 @@ body {
   background: transparent;
   color: white;
   border-radius: 12px;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .control-btn:hover {
@@ -117,21 +113,12 @@ body {
 
   <div id="timer">00:00</div>
 
-  <!-- BREATH RATE -->
-  <div class="row">
+  <div id="controls">
     <button class="select-btn" onclick="setRate(4, this)">4</button>
     <button class="select-btn" onclick="setRate(5, this)">5</button>
     <button class="select-btn" onclick="setRate(6, this)">6</button>
     <button class="select-btn" onclick="setRate(7, this)">7</button>
     <button class="select-btn" onclick="setRate(8, this)">8</button>
-  </div>
-
-  <!-- RATIO -->
-  <div class="row">
-    <button class="select-btn" onclick="setRatio(1,1,this)">1:1</button>
-    <button class="select-btn" onclick="setRatio(4,6,this)">4:6</button>
-    <button class="select-btn" onclick="setRatio(4,7,this)">4:7</button>
-    <button class="select-btn" onclick="setRatio(5,5,this)">5:5</button>
   </div>
 
   <div id="circles"></div>
@@ -145,9 +132,6 @@ body {
 
 <script>
 let breathRate = 4;
-let inhaleRatio = 1;
-let exhaleRatio = 1;
-
 let interval = null;
 let seconds = 0;
 let running = false;
@@ -156,18 +140,12 @@ let cycleIndex = 0;
 
 function setRate(rate, el) {
   breathRate = rate;
-  document.querySelectorAll(".row:first-of-type .select-btn").forEach(b => b.classList.remove("active"));
+
+  document.querySelectorAll(".select-btn").forEach(b => b.classList.remove("active"));
   el.classList.add("active");
+
   createCircles();
   resetCycles();
-}
-
-function setRatio(inhale, exhale, el) {
-  inhaleRatio = inhale;
-  exhaleRatio = exhale;
-
-  document.querySelectorAll(".row:nth-of-type(2) .select-btn").forEach(b => b.classList.remove("active"));
-  el.classList.add("active");
 }
 
 function createCircles() {
@@ -194,10 +172,7 @@ function breathStep() {
   if (!circles.length) return;
 
   const cycleTime = 60 / breathRate;
-
-  const totalRatio = inhaleRatio + exhaleRatio;
-  const inhaleTime = (inhaleRatio / totalRatio) * cycleTime;
-  const exhaleTime = (exhaleRatio / totalRatio) * cycleTime;
+  const halfCycle = cycleTime / 2;
 
   const currentTime = seconds % 60;
   const currentCycle = Math.floor(currentTime / cycleTime);
@@ -209,18 +184,7 @@ function breathStep() {
   let progress = currentTime % cycleTime;
   let circle = circles[cycleIndex];
 
-  // RESET STATES
-  circle.classList.remove("cue");
-
-  // GLOW just before phase switch
-  if (
-    Math.abs(progress - inhaleTime) < 0.5 ||
-    Math.abs(progress - cycleTime) < 0.5
-  ) {
-    circle.classList.add("cue");
-  }
-
-  if (progress < inhaleTime) {
+  if (progress < halfCycle) {
     circle.classList.remove("exhale");
     circle.classList.add("inhale");
   } else {
@@ -235,7 +199,7 @@ function breathStep() {
 
 function resetCycles() {
   document.querySelectorAll(".circle").forEach(c => {
-    c.classList.remove("inhale", "exhale", "cue");
+    c.classList.remove("inhale", "exhale");
   });
 }
 
