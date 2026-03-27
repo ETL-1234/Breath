@@ -10,34 +10,45 @@ body {
   font-family: Arial, sans-serif;
   background: #232f52;
   color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* MAIN CONTAINER */
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  height: 100vh;
+  gap: 20px;
 }
 
 /* TIMER */
 #timer {
   font-size: 48px;
-  margin-top: 20px;
 }
 
-/* SELECTOR */
+/* SELECT BUTTONS */
 #controls {
-  margin: 20px;
+  display: flex;
+  gap: 10px;
 }
 
-button {
+.select-btn {
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
   background: transparent;
-  border: 1px solid white;
   color: white;
-  padding: 8px 12px;
-  margin: 5px;
+  border-radius: 12px;
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-button.active {
+.select-btn.active {
   background: white;
   color: #232f52;
 }
@@ -46,7 +57,6 @@ button.active {
 #circles {
   display: flex;
   gap: 10px;
-  margin: 20px;
 }
 
 .circle {
@@ -54,9 +64,11 @@ button.active {
   height: 50px;
   border: 2px solid white;
   border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   color: #232f52;
   background: transparent;
   transition: all 0.4s ease;
@@ -67,34 +79,55 @@ button.active {
 }
 
 .circle.exhale {
-  background: #4da6ff;
+  background: #b4cadb;
 }
 
-/* BUTTONS */
+/* BOTTOM BUTTONS */
 #bottom-controls {
-  margin-bottom: 30px;
+  display: flex;
+  gap: 10px;
+}
+
+.control-btn {
+  width: 110px;
+  height: 50px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-btn:hover {
+  background: white;
+  color: #232f52;
 }
 </style>
 </head>
 
 <body>
 
-<div id="timer">00:00</div>
+<div class="container">
 
-<div id="controls">
-  <span>Select breaths/min:</span><br>
-  <button onclick="setRate(4)">4</button>
-  <button onclick="setRate(5)">5</button>
-  <button onclick="setRate(6)">6</button>
-  <button onclick="setRate(7)">7</button>
-  <button onclick="setRate(8)">8</button>
-</div>
+  <div id="timer">00:00</div>
 
-<div id="circles"></div>
+  <div id="controls">
+    <button class="select-btn" onclick="setRate(4, this)">4</button>
+    <button class="select-btn" onclick="setRate(5, this)">5</button>
+    <button class="select-btn" onclick="setRate(6, this)">6</button>
+    <button class="select-btn" onclick="setRate(7, this)">7</button>
+    <button class="select-btn" onclick="setRate(8, this)">8</button>
+  </div>
 
-<div id="bottom-controls">
-  <button onclick="startPause()">Start / Pause</button>
-  <button onclick="resetAll()">Reset</button>
+  <div id="circles"></div>
+
+  <div id="bottom-controls">
+    <button class="control-btn" onclick="startPause()">Start / Pause</button>
+    <button class="control-btn" onclick="resetAll()">Reset</button>
+  </div>
+
 </div>
 
 <script>
@@ -104,12 +137,13 @@ let seconds = 0;
 let running = false;
 
 let cycleIndex = 0;
-let phase = "inhale"; // inhale -> exhale
 
-function setRate(rate) {
+function setRate(rate, el) {
   breathRate = rate;
-  document.querySelectorAll("#controls button").forEach(b => b.classList.remove("active"));
-  event.target.classList.add("active");
+
+  document.querySelectorAll(".select-btn").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+
   createCircles();
   resetCycles();
 }
@@ -135,7 +169,7 @@ function updateTimer() {
 
 function breathStep() {
   const circles = document.querySelectorAll(".circle");
-  if (circles.length === 0) return;
+  if (!circles.length) return;
 
   const cycleTime = 60 / breathRate;
   const halfCycle = cycleTime / 2;
@@ -145,24 +179,19 @@ function breathStep() {
 
   if (currentCycle !== cycleIndex) {
     cycleIndex = currentCycle;
-    phase = "inhale";
   }
 
-  let progress = (currentTime % cycleTime);
-
+  let progress = currentTime % cycleTime;
   let circle = circles[cycleIndex];
 
   if (progress < halfCycle) {
-    // inhale
     circle.classList.remove("exhale");
     circle.classList.add("inhale");
   } else {
-    // exhale
     circle.classList.remove("inhale");
     circle.classList.add("exhale");
   }
 
-  // reset after full minute
   if (currentTime === 0) {
     resetCycles();
   }
