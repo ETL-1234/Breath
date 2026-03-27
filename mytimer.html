@@ -17,12 +17,11 @@ body {
   height: 100vh;
 }
 
-/* MAIN CONTAINER */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
 
 /* TIMER */
@@ -30,12 +29,13 @@ body {
   font-size: 48px;
 }
 
-/* SELECT BUTTONS */
-#controls {
+/* ROWS */
+.row {
   display: flex;
   gap: 10px;
 }
 
+/* BUTTONS */
 .select-btn {
   width: 50px;
   height: 50px;
@@ -43,9 +43,7 @@ body {
   background: transparent;
   color: white;
   border-radius: 12px;
-  font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .select-btn.active {
@@ -71,7 +69,8 @@ body {
 
   color: #232f52;
   background: transparent;
-  transition: all 0.4s ease;
+
+  transition: all 0.3s ease;
 }
 
 .circle.inhale {
@@ -82,10 +81,16 @@ body {
   background: #b4cadb;
 }
 
+/* GLOW */
+.circle.cue {
+  box-shadow: 0 0 10px 3px rgba(255,255,255,0.6);
+}
+
 /* BOTTOM BUTTONS */
 #bottom-controls {
   display: flex;
   gap: 10px;
+  margin-top: 50px;
 }
 
 .control-btn {
@@ -95,9 +100,7 @@ body {
   background: transparent;
   color: white;
   border-radius: 12px;
-  font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .control-btn:hover {
@@ -113,12 +116,23 @@ body {
 
   <div id="timer">00:00</div>
 
-  <div id="controls">
-    <button class="select-btn" onclick="setRate(4, this)">4</button>
+  <!-- BREATH RATE -->
+  <div class="row" id="rateRow">
+    <button class="select-btn active" onclick="setRate(4, this)">4</button>
     <button class="select-btn" onclick="setRate(5, this)">5</button>
     <button class="select-btn" onclick="setRate(6, this)">6</button>
     <button class="select-btn" onclick="setRate(7, this)">7</button>
     <button class="select-btn" onclick="setRate(8, this)">8</button>
+  </div>
+
+  <!-- RATIO -->
+  <div class="row" id="ratioRow">
+    <button class="select-btn active" onclick="setRatio(1,1,this)">1:1</button>
+    <button class="select-btn" onclick="setRatio(3,6,this)">3:6</button>
+    <button class="select-btn" onclick="setRatio(4,6,this)">4:6</button>
+    <button class="select-btn" onclick="setRatio(4,8,this)">4:8</button>
+    <button class="select-btn" onclick="setRatio(5,8,this)">5:8</button>
+    <button class="select-btn" onclick="setRatio(6,8,this)">6:8</button>
   </div>
 
   <div id="circles"></div>
@@ -132,6 +146,9 @@ body {
 
 <script>
 let breathRate = 4;
+let inhaleRatio = 1;
+let exhaleRatio = 1;
+
 let interval = null;
 let seconds = 0;
 let running = false;
@@ -141,11 +158,19 @@ let cycleIndex = 0;
 function setRate(rate, el) {
   breathRate = rate;
 
-  document.querySelectorAll(".select-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll("#rateRow .select-btn").forEach(b => b.classList.remove("active"));
   el.classList.add("active");
 
   createCircles();
   resetCycles();
+}
+
+function setRatio(inhale, exhale, el) {
+  inhaleRatio = inhale;
+  exhaleRatio = exhale;
+
+  document.querySelectorAll("#ratioRow .select-btn").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
 }
 
 function createCircles() {
@@ -172,34 +197,43 @@ function breathStep() {
   if (!circles.length) return;
 
   const cycleTime = 60 / breathRate;
-  const halfCycle = cycleTime / 2;
+
+  const totalRatio = inhaleRatio + exhaleRatio;
+  const inhaleTime = (inhaleRatio / totalRatio) * cycleTime;
 
   const currentTime = seconds % 60;
   const currentCycle = Math.floor(currentTime / cycleTime);
 
   if (currentCycle !== cycleIndex) {
     cycleIndex = currentCycle;
+    resetCycles();
   }
 
   let progress = currentTime % cycleTime;
   let circle = circles[cycleIndex];
 
-  if (progress < halfCycle) {
-    circle.classList.remove("exhale");
+  // CLEAR glow every frame
+  circles.forEach(c => c.classList.remove("cue"));
+
+  // GLOW just before transitions
+  if (
+    Math.abs(progress - inhaleTime) < 0.3 ||
+    Math.abs(progress - cycleTime) < 0.3
+  ) {
+    circle.classList.add("cue");
+  }
+
+  if (progress < inhaleTime) {
     circle.classList.add("inhale");
   } else {
     circle.classList.remove("inhale");
     circle.classList.add("exhale");
   }
-
-  if (currentTime === 0) {
-    resetCycles();
-  }
 }
 
 function resetCycles() {
   document.querySelectorAll(".circle").forEach(c => {
-    c.classList.remove("inhale", "exhale");
+    c.classList.remove("inhale", "exhale", "cue");
   });
 }
 
@@ -210,7 +244,7 @@ function loop() {
 
 function startPause() {
   if (!running) {
-    interval = setInterval(loop, 1000);
+    interval = setInterval(loop, 100);
     running = true;
   } else {
     clearInterval(interval);
@@ -223,7 +257,18 @@ function resetAll() {
   running = false;
   seconds = 0;
   cycleIndex = 0;
+
   document.getElementById("timer").innerText = "00:00";
+
+  // reset selections
+  inhaleRatio = 1;
+  exhaleRatio = 1;
+
+  document.querySelectorAll(".select-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector("#rateRow button").classList.add("active");
+  document.querySelector("#ratioRow button").classList.add("active");
+
+  createCircles();
   resetCycles();
 }
 
