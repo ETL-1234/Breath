@@ -244,7 +244,7 @@ function loop() {
 
 function startPause() {
   if (!running) {
-    interval = setInterval(loop, 100);
+    interval = setInterval(loop, 1000);
     running = true;
   } else {
     clearInterval(interval);
