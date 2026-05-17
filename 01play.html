@@ -911,6 +911,7 @@ practiceStartTime = Date.now();
 if (!hasTrackedStart) {
   track("start", {
     content: CONTENT_NAME
+    duration_minutes: Math.ceil(totalTime / 60)
   });
 
   hasTrackedStart = true;
