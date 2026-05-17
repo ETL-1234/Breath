@@ -876,6 +876,18 @@ startBtn.addEventListener("click", async () => {
   const phaseEl = document.getElementById("phase");
 
  if(playIcon.style.display !== "none"){
+
+   // ANALYTICS
+practiceStartTime = Date.now();
+
+if (!hasTrackedStart) {
+  track("start", {
+    content: CONTENT_NAME
+  });
+
+  hasTrackedStart = true;
+}
+   
     stopPractice = false;
     playIcon.style.display = "none";
     pauseIcon.style.display = "block";
