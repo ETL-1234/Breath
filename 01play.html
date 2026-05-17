@@ -268,7 +268,8 @@ transform: rotate(200deg) scale(1.08);
 const SUPABASE_URL = "https://tppyzexttkuvcobbbmaz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VZiTsc0JGVx6tVf2Zu-9uQ_-FwjGpQW";
 
-  // ANALYTICS
+ 
+// ANALYTICS
 const APP_NAME = "ETL";
 const CONTENT_TYPE = "Breath";
 
@@ -276,6 +277,17 @@ const CONTENT_TYPE = "Breath";
 const CONTENT_NAME = document.title;
 
 async function track(eventType, metadata = {}) {
+
+  // Automatically append user settings
+  const analyticsMetadata = {
+    ...metadata,
+
+    spoken_enabled: spokenEnabled,
+    music_enabled: ambientEnabled,
+    bell_enabled: bellEnabled,
+    design: userDesign || "circle"
+  };
+
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/analytics_use`, {
       method: "POST",
@@ -290,9 +302,10 @@ async function track(eventType, metadata = {}) {
         content_type: CONTENT_TYPE,
         title_name: CONTENT_NAME,
         event_type: eventType,
-        metadata: metadata
+        metadata: analyticsMetadata
       })
     }).catch(() => {});
+
   } catch (err) {
     console.log("Analytics error:", err);
   }
