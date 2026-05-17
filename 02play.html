@@ -890,7 +890,7 @@ const timeSpentSeconds = Math.floor(
 track("completed", {
   content: CONTENT_NAME,
   time_spent_seconds: timeSpentSeconds,
-  duration_min
+  duration_minutes: Math.round(totalTime / 60)
 });
 
   titleEl.classList.remove("fade-out");
