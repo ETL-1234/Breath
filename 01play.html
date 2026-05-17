@@ -856,6 +856,17 @@ async function finishPractice(){
   const phaseEl = document.getElementById("phase");
   phaseEl.innerText = "Complete";
 
+  // ANALYTICS
+const timeSpentSeconds = Math.floor(
+  (Date.now() - practiceStartTime) / 1000
+);
+
+track("completed", {
+  content: CONTENT_NAME,
+  time_spent_seconds: timeSpentSeconds,
+  duration_minutes: Math.round(totalTime / 60)
+});
+
   titleEl.classList.remove("fade-out");
   descriptionEl.classList.remove("fade-out");
   durationEl.classList.remove("fade-out");
