@@ -969,6 +969,7 @@ if (practiceStartTime) {
   track("stopped", {
     content: CONTENT_NAME,
     time_spent_seconds: timeSpentSeconds
+    duration_minutes: Math.ceil(totalTime / 60)
   });
 }
    
