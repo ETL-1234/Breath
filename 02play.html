@@ -502,15 +502,15 @@ async function loadPractices(){
     practice = data[0];
     if(!practice){ alert("No practice found"); return; }
 
+     // ANALYTICS
+track("view", {
+ content: CONTENT_NAME
+});
+
     document.getElementById("title").innerText = practice.name;
     document.getElementById("description").innerText = practice.description || "";
 
-    const displayDuration = Math.round(totalTime / 60);
-
-document.getElementById("duration").innerHTML =
-  `<strong>Duration:</strong> ${displayDuration} minutes`;
-
-        minScale = practice.min_size || 1;
+          minScale = practice.min_size || 1;
     maxScale = practice.max_size || 1.3;
     animationCurve = practice.animation_curve || "linear";
 
@@ -521,9 +521,20 @@ document.getElementById("duration").innerHTML =
       {label:"Hold", seconds:practice.hold2_seconds}
     ].filter(s => (s.seconds??0)>0);
 
-    if(!totalTime){
-  totalTime = practice.practicetime * 60;
+    // IMPORTANT:
+// If user has not chosen a custom duration,
+// use the practice default
+
+if(!totalTime){
+ totalTime = practice.practicetime * 60;
 }
+ 
+// NOW calculate display duration
+
+ const displayDuration = Math.round(totalTime / 60);
+
+document.getElementById("duration").innerHTML =
+  `<strong>Duration:</strong> ${displayDuration} minutes`;
 
     applyTheme(practice);
    renderDesign(userDesign === "ripple" ? "ripple" : "circle");
