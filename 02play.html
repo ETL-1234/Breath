@@ -969,6 +969,21 @@ if (!hasTrackedStart) {
    
   } else {
     // Stop button clicked
+
+// ANALYTICS
+if (practiceStartTime) {
+
+  const timeSpentSeconds = Math.floor(
+    (Date.now() - practiceStartTime) / 1000
+  );
+
+  track("stopped", {
+    content: CONTENT_NAME,
+time_spent_seconds: timeSpentSeconds,
+duration_minutes: Math.ceil(totalTime / 60) 
+  });
+}
+   
     stopPractice = true;
 
    // ANALYTICS
