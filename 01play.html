@@ -482,6 +482,11 @@ async function loadPractices(){
     practice = data[0];
     if(!practice){ alert("No practice found"); return; }
 
+    // ANALYTICS
+track("view", {
+  content: CONTENT_NAME
+});
+
     document.getElementById("title").innerText = practice.name;
     document.getElementById("description").innerText = practice.description || "";
 
