@@ -625,15 +625,25 @@ function startCircleBreathing(){
 }
 
   async function startCountdown(){
-  const phaseEl = document.getElementById("phase");
 
-  const steps = ["3","2","1","Inhale"];
+ const phaseEl = document.getElementById("phase");
+ const circle = document.getElementById("circle");
 
-  for(const s of steps){
-    phaseEl.innerText = s;
-    await new Promise(r => setTimeout(r,1000));
-    if(stopPractice) return false;
-  }
+ // hide animation during countdown
+ circle.classList.add("hiddenState");
+
+ const steps = ["3","2","1","Inhale"];
+
+ for(const s of steps){
+ phaseEl.innerText = s;
+
+ await new Promise(r => setTimeout(r,1000));
+
+ if(stopPractice){
+ circle.classList.remove("hiddenState");
+ return false;
+ }
+ }
 
   return true;
 }
