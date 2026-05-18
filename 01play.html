@@ -894,6 +894,9 @@ async function finishPractice(){
   const phaseEl = document.getElementById("phase");
   phaseEl.innerText = "Complete";
 
+  document.getElementById("circle")
+ .classList.add("hiddenState");
+
   // ANALYTICS
 const timeSpentSeconds = Math.floor(
   (Date.now() - practiceStartTime) / 1000
