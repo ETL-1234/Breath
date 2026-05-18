@@ -89,11 +89,6 @@ body{
   will-change: transform, box-shadow;
   }
 
-/* Completely remove circle during countdown / pause / complete */
-#circle.hiddenState{
-display:none !important;
-}
-  
   #rippleCanvas{
   position:absolute;
   width:100%;
@@ -479,10 +474,6 @@ if (resetBtn) {
       : "";
 
     phaseEl.innerText = "Ready";
-
-    circle.classList.remove("hiddenState");
-    circle.style.display = "block";
-    
     spokenToggle.classList.toggle("active", spokenEnabled);
 
     // Reset button UI
@@ -628,25 +619,15 @@ function startCircleBreathing(){
 }
 
   async function startCountdown(){
+  const phaseEl = document.getElementById("phase");
 
- const phaseEl = document.getElementById("phase");
- const circle = document.getElementById("circle");
+  const steps = ["3","2","1","Inhale"];
 
- // hide animation during countdown
- circle.classList.add("hiddenState");
-
- const steps = ["3","2","1","Inhale"];
-
- for(const s of steps){
- phaseEl.innerText = s;
-
- await new Promise(r => setTimeout(r,1000));
-
- if(stopPractice){
- circle.classList.remove("hiddenState");
- return false;
- }
- }
+  for(const s of steps){
+    phaseEl.innerText = s;
+    await new Promise(r => setTimeout(r,1000));
+    if(stopPractice) return false;
+  }
 
   return true;
 }
@@ -897,9 +878,6 @@ async function finishPractice(){
   const phaseEl = document.getElementById("phase");
   phaseEl.innerText = "Complete";
 
-  document.getElementById("circle")
- .classList.add("hiddenState");
-
   // ANALYTICS
 const timeSpentSeconds = Math.floor(
   (Date.now() - practiceStartTime) / 1000
@@ -972,13 +950,6 @@ if (!hasTrackedStart) {
    // breathing loop
     const ready = await startCountdown();
     if(!ready) return;
-
-   // restore circle before breathing starts
-circle.classList.remove("hiddenState");
-
-circle.style.display = "block";
-circle.style.opacity = practice.opacity ?? 1;
-   
   if(userDesign === "ripple"){
   ripples = [];        // reset ripples
   animateRipples();    // start animation
@@ -1027,9 +998,6 @@ if (practiceStartTime) {
     if(endAudio) endAudio.pause();
 
     phaseEl.innerText = "Paused";
-
-   circle.classList.add("hiddenState");
-   
     circle.style.transform = `scale(${minScale})`;
     circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
   }
