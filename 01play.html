@@ -1018,6 +1018,9 @@ if (practiceStartTime) {
     if(endAudio) endAudio.pause();
 
     phaseEl.innerText = "Paused";
+
+   circle.classList.add("hiddenState");
+   
     circle.style.transform = `scale(${minScale})`;
     circle.style.boxShadow = practice.glow_color ? `0 0 40px ${practice.glow_color}` : "";
   }
