@@ -966,6 +966,10 @@ if (!hasTrackedStart) {
    // breathing loop
     const ready = await startCountdown();
     if(!ready) return;
+
+   // show animation again once breathing starts
+circle.classList.remove("hiddenState");
+   
   if(userDesign === "ripple"){
   ripples = [];        // reset ripples
   animateRipples();    // start animation
