@@ -644,10 +644,23 @@ function startCircleBreathing(){
   return true;
 }
 
- function resizeRippleCanvas(){
+function resizeRippleCanvas(){
+
   const wrapper = document.getElementById("circleWrapper");
-  rippleCanvas.width = wrapper.clientWidth;
-  rippleCanvas.height = wrapper.clientHeight;
+
+  // create slightly larger internal drawing buffer
+  // WITHOUT enlarging the actual DOM element
+
+  rippleCanvas.width = wrapper.clientWidth * 1.25;
+  rippleCanvas.height = wrapper.clientHeight * 1.25;
+
+  rippleCtx.setTransform(1,0,0,1,0,0);
+
+  // center drawing area
+  rippleCtx.translate(
+    (rippleCanvas.width - wrapper.clientWidth) / -2,
+    (rippleCanvas.height - wrapper.clientHeight) / -2
+  );
 }
 
 function emitRipples(count=4, delay=450, speed=1.3){
