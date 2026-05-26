@@ -69,14 +69,19 @@ body{
   opacity:0 !important;
 }
 
-  #circleWrapper{
-  position: relative;
-  width: var(--circle-size);
-  height: var(--circle-size);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:50px;
+ #circleWrapper{
+position: relative;
+
+width: calc(var(--circle-size) * 1.8);
+height: calc(var(--circle-size) * 1.8);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+overflow:visible;
+
+margin-bottom:50px;
 }
   
 #circle{
