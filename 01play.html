@@ -31,7 +31,6 @@ body{
   height:100vh;
   text-align:center;
   padding-top:60px;
-  overflow:hidden;
 }
 
 #header{
@@ -70,19 +69,14 @@ body{
   opacity:0 !important;
 }
 
- #circleWrapper{
-  position:relative;
-
-  width:min(88vw, 88vh, 700px);
-  height:min(88vw, 88vh, 700px);
-
+  #circleWrapper{
+  position: relative;
+  width: var(--circle-size);
+  height: var(--circle-size);
   display:flex;
   align-items:center;
   justify-content:center;
-
-  margin-bottom:50px;
-
-  overflow:hidden;
+ margin-bottom:50px;
 }
   
 #circle{
@@ -97,14 +91,8 @@ body{
 
  #rippleCanvas{
   position:absolute;
-
   width:100%;
   height:100%;
-
-  left:0;
-  top:0;
-
-  pointer-events:none;
 }
 
 #phase{
@@ -644,23 +632,10 @@ function startCircleBreathing(){
   return true;
 }
 
-function resizeRippleCanvas(){
-
+ function resizeRippleCanvas(){
   const wrapper = document.getElementById("circleWrapper");
-
-  // create slightly larger internal drawing buffer
-  // WITHOUT enlarging the actual DOM element
-
-  rippleCanvas.width = wrapper.clientWidth * 1.25;
-  rippleCanvas.height = wrapper.clientHeight * 1.25;
-
-  rippleCtx.setTransform(1,0,0,1,0,0);
-
-  // center drawing area
-  rippleCtx.translate(
-    (rippleCanvas.width - wrapper.clientWidth) / -2,
-    (rippleCanvas.height - wrapper.clientHeight) / -2
-  );
+  rippleCanvas.width = wrapper.clientWidth;
+  rippleCanvas.height = wrapper.clientHeight;
 }
 
 function emitRipples(count=4, delay=450, speed=1.3){
