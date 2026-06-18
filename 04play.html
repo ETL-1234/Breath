@@ -565,9 +565,16 @@ if(p.text_color){
     `;
   } 
   // fallback to gradients if no bg_image
-  else if(p.bg_start_gradient && p.bg_end_gradient){
-    document.body.style.background = `linear-gradient(${p.bg_start_gradient}, ${p.bg_end_gradient})`;
-  }
+else if (p.bg_start_gradient && p.bg_mid_gradient && p.bg_end_gradient) {
+  document.body.style.background = `
+    linear-gradient(
+      to left,
+      ${p.bg_start_gradient} 0%,
+      ${p.bg_mid_gradient} 50%,
+      ${p.bg_end_gradient} 100%
+    )
+  `;
+}
 
   // Single opacity setting (controls circle, text, and glow)
   const opacity = p.opacity ?? 1; // default full opacity if not set
