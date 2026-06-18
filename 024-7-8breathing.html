@@ -9,6 +9,12 @@
 <style>
 :root{
   --bg-color:#68848d;
+  --bg-gradient:linear-gradient(
+    90deg,
+    #405f64 0%,
+    #405f64 50%,
+    #68848d 100%
+  );
   --text-color:#ffffff;
 }
 
@@ -20,7 +26,7 @@
 
 body{
   font-family:'Inter',sans-serif;
-  background:var(--bg-color);
+  background:var(--bg-gradient);
   color:var(--text-color);
   display:flex;
   flex-direction:column;
