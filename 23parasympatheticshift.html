@@ -9,6 +9,13 @@
 <style>
 :root{
   --bg-color:#656584;
+  --bg-gradient:linear-gradient(
+    90deg,
+    #555172 0%,
+    #555172 50%,
+    #656584 100%
+  );
+
   --text-color:#ffffff;
 }
 
@@ -20,7 +27,7 @@
 
 body{
   font-family:'Inter',sans-serif;
-  background:var(--bg-color);
+  background:var(--bg-gradient);
   color:var(--text-color);
   display:flex;
   flex-direction:column;
