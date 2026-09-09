@@ -89,10 +89,15 @@ body{
   will-change: transform, box-shadow;
   }
 
-  #rippleCanvas{
+ #rippleCanvas{
   position:absolute;
-  width:100%;
-  height:100%;
+  width:100vw;
+  height:55vh;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  overflow:visible;
 }
 
 #phase{
@@ -636,11 +641,19 @@ function startCircleBreathing(){
   return true;
 }
 
- function resizeRippleCanvas(){
-  const wrapper = document.getElementById("circleWrapper");
-  rippleCanvas.width = wrapper.clientWidth;
-  rippleCanvas.height = wrapper.clientHeight;
+function resizeRippleCanvas(){
+
+  const width = window.innerWidth;
+  const height = Math.round(window.innerHeight * 0.55);
+
+  rippleCanvas.width = width;
+  rippleCanvas.height = height;
 }
+window.addEventListener("resize", () => {
+  if(userDesign === "ripple"){
+    resizeRippleCanvas();
+  }
+});
 
 function emitRipples(count=4, delay=450, speed=1.3){
 
