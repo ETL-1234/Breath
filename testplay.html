@@ -653,6 +653,12 @@ function resizeRippleCanvas(){
   rippleCanvas.height = height;
 }
 
+  window.addEventListener("resize", () => {
+  if(userDesign === "ripple"){
+    resizeRippleCanvas();
+  }
+});
+
 function emitRipples(count=4, delay=450, speed=1.3){
 
   let i = 0;
